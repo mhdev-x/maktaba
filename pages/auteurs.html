@@ -86,73 +86,8 @@
 
         <section class="section-auteurs">
             <div class="conteneur-auteurs">
-                <div class="grille-auteurs">
-
-                    <!-- Auteur 1 -->
-                <a href="auteur.html" class="carte-auteur"> <!-- ✨ Remplacer 'livres.html?auteur=nawawi' par 'auteur.html' -->
-                    <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                    <span class="nom-arabe-auteur">الإمام النووي</span>
-                    <h3 class="nom-auteur">Imam An-Nawawi</h3>
-                    <span class="epoque-auteur">VIIe siècle de l'Hégire</span>
-                    <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 2 ouvrages</span>
-                </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن كثير</span>
-                        <h3 class="nom-auteur">Ibn Kathir</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 4 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن تيمية</span>
-                        <h3 class="nom-auteur">Ibn Taymiyyah</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 7 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن قيم الجوزية</span>
-                        <h3 class="nom-auteur">Ibn al-Qayyim</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 6 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">الإمام البخاري</span>
-                        <h3 class="nom-auteur">Imam Al-Bukhari</h3>
-                        <span class="epoque-auteur">IIIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 2 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن حجر العسقلاني</span>
-                        <h3 class="nom-auteur">Ibn Hajar Al-Asqalani</h3>
-                        <span class="epoque-auteur">IXe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 3 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">محمد بن عبد الوهاب</span>
-                        <h3 class="nom-auteur">Muhammad ibn Abd al-Wahhab</h3>
-                        <span class="epoque-auteur">XIIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 8 ouvrages</span>
-                    </a>
-
-                    <a href="auteur.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">الإمام الشافعي</span>
-                        <h3 class="nom-auteur">Imam Ach-Chafi'i</h3>
-                        <span class="epoque-auteur">IIe siècle de l'Hégire</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 2 ouvrages</span>
-                    </a>
-
+                <div class="grille-auteurs" id="grille-auteurs">
+                    <p class="message-vide-inline" id="message-chargement">Chargement des auteurs...</p>
                 </div>
             </div>
         </section>
@@ -209,6 +144,8 @@
     </footer>
 
 <script src="../js/supabase-client.js"></script>
+<script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
+<script src="../js/auteurs.js"></script>
 </body>
 </html>

@@ -104,6 +104,22 @@
                 </article>
             </div>
         </section>
+
+        <!-- Mes ouvrages favoris -->
+        <section class="section-oeuvres-auteur">
+            <div class="conteneur-catalogue">
+                <div class="en-tete-section">
+                    <div>
+                        <span class="surtitre-section">Bibliothèque personnelle</span>
+                        <h2 class="titre-section">Mes favoris</h2>
+                    </div>
+                </div>
+
+                <div class="grille-livres" id="grille-favoris">
+                    <p class="message-vide-inline">Chargement de vos favoris...</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="pied-page">
@@ -157,6 +173,7 @@
 
     
     <script src="../js/supabase-client.js"></script>
+    <script src="../js/data.js"></script>
     <script src="../js/app.js"></script>
     <script>
         // ==========================================================================
@@ -204,6 +221,15 @@
                     window.location.href = "../index.html";
                 }
             });
+
+            // --- Mes favoris ---
+            let grilleFavoris = document.getElementById("grille-favoris");
+            if (grilleFavoris) {
+                let favoris = await chargerFavorisUtilisateur(utilisateur.id);
+                grilleFavoris.innerHTML = favoris.length
+                    ? favoris.map(maktabaCarteLivreHTML).join("")
+                    : `<p class="message-vide-inline">Vous n'avez encore ajouté aucun favori. <a href="livres.html">Parcourir la bibliothèque</a>.</p>`;
+            }
         });
     </script>
 </body>

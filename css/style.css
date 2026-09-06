@@ -1130,6 +1130,12 @@ a.carte-livre {
     background-color: var(--couleur-surface);
 }
 
+.btn-favori.favori-actif {
+    background-color: var(--couleur-accent);
+    color: var(--couleur-fond);
+    border-color: var(--couleur-accent);
+}
+
 .description-livre h3 {
     font-size: 1.3rem;
     color: var(--couleur-texte);
@@ -2309,4 +2315,40 @@ body.theme-clair .badge-collection-meta {
 .section-oeuvres-auteur {
     width: 100%;
     padding: 60px 0 100px 0;
+}
+/* =========================================
+   AJOUTS — CHARGEMENT DYNAMIQUE (Supabase)
+   ========================================= */
+.message-vide-inline {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--couleur-secondaire);
+}
+
+.message-vide-inline a {
+    color: var(--couleur-accent);
+    text-decoration: underline;
+}
+
+.compteur-collection {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--couleur-accent);
+    font-weight: 600;
+}
+
+.groupe-badges-categorie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.message-erreur-favori {
+    color: #d9534f;
+    font-size: 0.9rem;
+    margin-top: -8px;
+    margin-bottom: 24px;
 }

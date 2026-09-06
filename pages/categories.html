@@ -88,82 +88,101 @@
             <div class="conteneur-page-collections">
                 <div class="grille-page-collections">
 
-                    <a href="livres.html?categorie=aqida" class="carte-page-collection">
+                    <a href="livres.html?categorie=aqida" class="carte-page-collection" data-categorie="aqida">
                         <span class="numero-collection">01</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-book-open"></i>
                             <h3>Aqida</h3>
                             <p>Ouvrages fondamentaux sur la croyance et l'unicité (Tawhid).</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=hadith" class="carte-page-collection">
+                    <a href="livres.html?categorie=coran" class="carte-page-collection" data-categorie="coran">
                         <span class="numero-collection">02</span>
+                        <div class="contenu-collection">
+                            <i class="fa-solid fa-book-quran"></i>
+                            <h3>Coran et sciences du Coran</h3>
+                            <p>Le Saint Coran et les sciences qui lui sont liées.</p>
+                            <span class="compteur-collection">...</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right fleche-collection"></i>
+                    </a>
+
+                    <a href="livres.html?categorie=hadith" class="carte-page-collection" data-categorie="hadith">
+                        <span class="numero-collection">03</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-scroll"></i>
                             <h3>Hadith</h3>
                             <p>Recueils prophétiques, explications et sciences du hadith.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=tafsir" class="carte-page-collection">
-                        <span class="numero-collection">03</span>
+                    <a href="livres.html?categorie=tafsir" class="carte-page-collection" data-categorie="tafsir">
+                        <span class="numero-collection">04</span>
                         <div class="contenu-collection">
-                            <i class="fa-solid fa-book-quran"></i>
+                            <i class="fa-solid fa-magnifying-glass"></i>
                             <h3>Tafsir</h3>
                             <p>Exégèse, commentaires et sciences liées au Saint Coran.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=fiqh" class="carte-page-collection">
-                        <span class="numero-collection">04</span>
+                    <a href="livres.html?categorie=fiqh" class="carte-page-collection" data-categorie="fiqh">
+                        <span class="numero-collection">05</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-scale-balanced"></i>
                             <h3>Fiqh</h3>
                             <p>Jurisprudence islamique, règles cultuelles et sociales.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=sira" class="carte-page-collection">
-                        <span class="numero-collection">05</span>
+                    <a href="livres.html?categorie=sira" class="carte-page-collection" data-categorie="sira">
+                        <span class="numero-collection">06</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-mosque"></i>
                             <h3>Sira</h3>
                             <p>Biographie du Prophète ﷺ et histoire islamique (Tarikh).</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=adab" class="carte-page-collection">
-                        <span class="numero-collection">06</span>
+                    <a href="livres.html?categorie=adab" class="carte-page-collection" data-categorie="adab">
+                        <span class="numero-collection">07</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-heart"></i>
                             <h3>Adab</h3>
                             <p>Éthique, comportement, spiritualité et purification de l'âme.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=usul" class="carte-page-collection">
-                        <span class="numero-collection">07</span>
+                    <a href="livres.html?categorie=usul" class="carte-page-collection" data-categorie="usul">
+                        <span class="numero-collection">08</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-gavel"></i>
                             <h3>Usul al-Fiqh</h3>
                             <p>Fondements du droit islamique et règles de déduction.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
 
-                    <a href="livres.html?categorie=arabe" class="carte-page-collection">
-                        <span class="numero-collection">08</span>
+                    <a href="livres.html?categorie=arabe" class="carte-page-collection" data-categorie="arabe">
+                        <span class="numero-collection">09</span>
                         <div class="contenu-collection">
                             <i class="fa-solid fa-pen-nib"></i>
                             <h3>Langue Arabe</h3>
                             <p>Grammaire, conjugaison, rhétorique et vocabulaire.</p>
+                        <span class="compteur-collection">...</span>
                         </div>
                         <i class="fa-solid fa-arrow-right fleche-collection"></i>
                     </a>
@@ -224,6 +243,8 @@
     </footer>
 
 <script src="../js/supabase-client.js"></script>
+<script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
+<script src="../js/categories.js"></script>
 </body>
 </html>

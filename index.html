@@ -125,15 +125,15 @@
                     <div class="carte-livre-hero">
                         <span class="ruban-livre">À la une</span>
                         <div class="couverture-livre">
-                            <span class="couverture-arabe">رياض الصالحين</span>
-                            <h3 class="couverture-titre">Riyad as-Salihin</h3>
-                            <p class="couverture-auteur">Imam An-Nawawi</p>
+                            <span class="couverture-arabe" id="hero-arabe">رياض الصالحين</span>
+                            <h3 class="couverture-titre" id="hero-titre">Riyad as-Salihin</h3>
+                            <p class="couverture-auteur" id="hero-auteur">Imam An-Nawawi</p>
                         </div>
                         <div class="infos-livre">
                             <span class="etiquette-livre">
-                                <i class="fa-solid fa-bookmark"></i> Hadith
+                                <i class="fa-solid fa-bookmark"></i> <span id="hero-categorie-texte">Hadith</span>
                             </span>
-                            <span class="etiquette-livre">
+                            <span class="etiquette-livre" id="hero-meta-texte">
                                 <i class="fa-solid fa-file-lines"></i> 1900 hadiths
                             </span>
                         </div>
@@ -213,66 +213,8 @@
                     </a>
                 </div>
 
-                <div class="grille-livres">
-                    <a href="pages/livre.html" class="carte-livre">
-                        <div class="visuel-carte-livre">
-                            <span class="visuel-arabe">كتاب التوحيد</span>
-                            <span class="badge-categorie">Aqida</span>
-                        </div>
-                        <div class="corps-carte-livre">
-                            <h3 class="titre-carte-livre">Kitab at-Tawhid</h3>
-                            <p class="auteur-carte-livre">Muhammad ibn Abd al-Wahhab</p>
-                            <div class="pied-carte-livre">
-                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
-                                <span><i class="fa-solid fa-file-lines"></i> 160 pages</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="pages/livre.html" class="carte-livre">
-                        <div class="visuel-carte-livre">
-                            <span class="visuel-arabe">الأربعون النووية</span>
-                            <span class="badge-categorie">Hadith</span>
-                        </div>
-                        <div class="corps-carte-livre">
-                            <h3 class="titre-carte-livre">Les 40 Hadiths</h3>
-                            <p class="auteur-carte-livre">Imam An-Nawawi</p>
-                            <div class="pied-carte-livre">
-                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
-                                <span><i class="fa-solid fa-file-lines"></i> 120 pages</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="pages/livre.html" class="carte-livre">
-                        <div class="visuel-carte-livre">
-                            <span class="visuel-arabe">تفسير ابن كثير</span>
-                            <span class="badge-categorie">Tafsir</span>
-                        </div>
-                        <div class="corps-carte-livre">
-                            <h3 class="titre-carte-livre">Tafsir Ibn Kathir</h3>
-                            <p class="auteur-carte-livre">Isma'il ibn Kathir</p>
-                            <div class="pied-carte-livre">
-                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
-                                <span><i class="fa-solid fa-layer-group"></i> 4 volumes</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="pages/livre.html" class="carte-livre">
-                        <div class="visuel-carte-livre">
-                            <span class="visuel-arabe">الرحيق المختوم</span>
-                            <span class="badge-categorie">Sira</span>
-                        </div>
-                        <div class="corps-carte-livre">
-                            <h3 class="titre-carte-livre">Le Nectar Cacheté</h3>
-                            <p class="auteur-carte-livre">Safiur Rahman al-Mubarakpuri</p>
-                            <div class="pied-carte-livre">
-                                <span><i class="fa-solid fa-language"></i> Français</span>
-                                <span><i class="fa-solid fa-file-lines"></i> 540 pages</span>
-                            </div>
-                        </div>
-                    </a>
+                <div class="grille-livres" id="grille-livres-vedette">
+                    <p class="message-vide-inline">Chargement des ouvrages...</p>
                 </div>
             </div>
         </section>
@@ -291,38 +233,8 @@
                     </a>
                 </div>
 
-                <div class="grille-auteurs">
-                    <a href="pages/auteurs.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">الإمام النووي</span>
-                        <h3 class="nom-auteur">Imam An-Nawawi</h3>
-                        <span class="epoque-auteur">VIIe siècle de l'Hégire (XIIIe G)</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 5 ouvrages</span>
-                    </a>
-
-                    <a href="pages/auteurs.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن كثير</span>
-                        <h3 class="nom-auteur">Ibn Kathir</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 4 ouvrages</span>
-                    </a>
-
-                    <a href="pages/auteurs.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن تيمية</span>
-                        <h3 class="nom-auteur">Ibn Taymiyyah</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 7 ouvrages</span>
-                    </a>
-
-                    <a href="pages/auteurs.html" class="carte-auteur">
-                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
-                        <span class="nom-arabe-auteur">ابن قيم الجوزية</span>
-                        <h3 class="nom-auteur">Ibn al-Qayyim</h3>
-                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
-                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 6 ouvrages</span>
-                    </a>
+                <div class="grille-auteurs" id="grille-auteurs-vedette">
+                    <p class="message-vide-inline">Chargement des auteurs...</p>
                 </div>
             </div>
         </section>
@@ -382,6 +294,8 @@
     </footer>
 
 <script src="js/supabase-client.js"></script>
+<script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

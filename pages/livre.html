@@ -84,71 +84,83 @@
                 <i class="fa-solid fa-chevron-right"></i>
                 <a href="livres.html">Bibliothèque</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <a href="livres.html?categorie=hadith">Hadith</a>
+                <a href="livres.html" id="fil-ariane-categorie">Catégorie</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <span class="page-actuelle">Riyad as-Salihin</span>
+                <span class="page-actuelle" id="fil-ariane-livre">Chargement...</span>
             </nav>
         </div>
 
         <!-- Section Présentation du Livre -->
         <section class="section-presentation-livre">
-            <div class="conteneur-livre-details">
-                
+            <div class="conteneur-livre-details" id="conteneur-livre-details">
+
                 <!-- Colonne Gauche : Couverture -->
                 <div class="colonne-couverture">
                     <div class="grande-couverture">
-                        <span class="couverture-arabe">رياض الصالحين</span>
-                        <h3 class="couverture-titre">Riyad as-Salihin</h3>
-                        <p class="couverture-auteur">Imam An-Nawawi</p>
+                        <span class="couverture-arabe" id="couverture-arabe-livre"></span>
+                        <h3 class="couverture-titre" id="couverture-titre-livre">Chargement...</h3>
+                        <p class="couverture-auteur" id="couverture-auteur-livre"></p>
                     </div>
                 </div>
 
                 <!-- Colonne Droite : Informations -->
                 <div class="colonne-infos">
                     <div class="en-tete-infos">
-                        <span class="badge-categorie">Hadith</span>
-                        <h1 class="titre-livre">Riyad as-Salihin <br><span class="titre-arabe">رياض الصالحين</span></h1>
-                        <a href="auteurs.html" class="lien-auteur">Imam Yahya ibn Sharaf An-Nawawi</a>
+                        <div class="groupe-badges-categorie" id="badges-categorie-livre"></div>
+                        <h1 class="titre-livre" id="titre-principal-livre">Chargement... <br><span class="titre-arabe" id="titre-arabe-livre"></span></h1>
+                        <a href="auteurs.html" class="lien-auteur" id="lien-auteur-livre">Chargement...</a>
                     </div>
 
                     <div class="meta-donnees-livre">
                         <div class="donnee">
                             <span class="donnee-label">Langue</span>
-                            <span class="donnee-valeur">Arabe / Français</span>
+                            <span class="donnee-valeur" id="donnee-langue-livre">—</span>
                         </div>
                         <div class="donnee">
-                            <span class="donnee-label">Pages</span>
-                            <span class="donnee-valeur">~ 1900 hadiths</span>
+                            <span class="donnee-label">Langue originale</span>
+                            <span class="donnee-valeur" id="donnee-langue-originale-valeur">—</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label" id="donnee-pages-label">Pages</span>
+                            <span class="donnee-valeur" id="donnee-pages-valeur">—</span>
                         </div>
                         <div class="donnee">
                             <span class="donnee-label">Édition de base</span>
-                            <span class="donnee-valeur">Dar Al-Minhaj</span>
+                            <span class="donnee-valeur" id="donnee-edition-valeur">—</span>
                         </div>
                         <div class="donnee">
                             <span class="donnee-label">Authentification</span>
-                            <span class="donnee-valeur">Cheikh Al-Albani</span>
+                            <span class="donnee-valeur" id="donnee-authentification-valeur">—</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label">Éditeur</span>
+                            <span class="donnee-valeur" id="donnee-editeur-valeur">—</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label">Année de publication</span>
+                            <span class="donnee-valeur" id="donnee-annee-valeur">—</span>
                         </div>
                     </div>
 
                     <div class="actions-livre">
-                        <button class="bouton-principal" type="button">
+                        <button class="bouton-principal" type="button" id="bouton-lire-livre">
                             <i class="fa-solid fa-book-open-reader"></i> Lire en ligne
                         </button>
                         <button class="bouton-secondaire btn-favori" type="button">
                             <i class="fa-regular fa-bookmark"></i> Ajouter aux favoris
                         </button>
+                        <button class="bouton-secondaire" type="button" id="bouton-source-livre" hidden>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Voir la source
+                        </button>
                     </div>
+
+                    <p class="message-erreur-favori" id="message-erreur-favori" hidden></p>
 
                     <div class="description-livre">
                         <h3>À propos de cet ouvrage</h3>
-                        <p>
-                            Le Jardin des Vertueux (Riyad as-Salihin) est l'un des recueils de hadiths les plus lus et les plus connus dans le monde musulman. 
-                            Compilé par l'Imam An-Nawawi au XIIIe siècle, il rassemble des hadiths authentiques couvrant tous les aspects de la foi, 
-                            du comportement et de la morale islamique, tirés principalement de Sahih Al-Bukhari et Sahih Muslim.
-                        </p>
-                        <p>
-                            Ce livre est un guide spirituel indispensable pour tout musulman souhaitant améliorer son caractère et se rapprocher de son Créateur.
-                        </p>
+                        <div id="description-livre-texte">
+                            <p>Chargement de la description...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -211,6 +223,8 @@
 
     <!-- Scripts JS -->
 <script src="../js/supabase-client.js"></script>
+<script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
+<script src="../js/livre.js"></script>
 </body>
 </html>
