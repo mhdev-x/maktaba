@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Découvrez l'histoire de Maktaba, bibliothèque islamique numérique gratuite née d'un projet personnel devenu communautaire.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>À propos — Maktaba</title>
+</head>
+<body>
+
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="../index.html" class="logo">Maktaba</a>
+
+            <div class="liens-navigation">
+                <a href="../index.html" class="lien-navigation">Accueil</a>
+                <a href="livres.html" class="lien-navigation">Bibliothèque</a>
+                <a href="categories.html" class="lien-navigation">Collections</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="a-propos.html" class="lien-navigation actif">À propos</a>
+
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i> <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =========================================
+         CONTENU PRINCIPAL : À PROPOS
+         ========================================= -->
+    <main id="contenu-principal">
+
+        <!-- En-tête de page -->
+        <section class="section-en-tete-page">
+            <div class="conteneur-en-tete-page">
+                <span class="surtitre-section">L'Histoire du Projet</span>
+                <h1 class="titre-page">À propos de Maktaba</h1>
+                <p class="description-page">
+                    Maktaba est née d'un besoin personnel : rassembler, organiser et partager une bibliothèque islamique numérique authentique pour la rendre accessible à tous.
+                </p>
+            </div>
+        </section>
+
+        <!-- Contenu Éditorial -->
+        <section class="section-a-propos">
+            <div class="conteneur-a-propos">
+
+                <!-- Bloc 1 : L'origine du projet -->
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-solid fa-seedling"></i></div>
+                    <h2>La Genèse</h2>
+                    <p>
+                        Ce projet a été imaginé et développé par un étudiant musulman en quête de science. Au fil du temps, j'avais accumulé de très nombreux ouvrages islamiques numériques sur mon Drive personnel. 
+                    </p>
+                    <p>
+                        Tous ces livres ont été précieusement sélectionnés pour leur conformité au <strong>Noble Coran</strong>, à la <strong>Sunnah</strong> du Messager d'Allah ﷺ, et à la compréhension des pieux prédécesseurs (<em>Salaf as-Salih</em>).
+                    </p>
+                    <p>
+                        Cependant, ces ressources étaient éparpillées, et il devenait difficile de m'y retrouver. C'est de ce constat qu'est née l'idée de Maktaba : créer une véritable plateforme structurée, d'abord pour me faciliter l'étude et l'organisation de ma propre bibliothèque, puis avec la volonté de l'ouvrir afin de permettre à d'autres musulmans d'en bénéficier bi'idhnillah.
+                    </p>
+                </article>
+
+                <!-- Bloc 2 : Les Engagements -->
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h2>Nos Engagements</h2>
+                    <ul class="liste-engagements">
+                        <li>
+                            <strong>Rigueur de la croyance :</strong> Maktaba ne propose que des ouvrages fidèles à la croyance authentique d'Ahl as-Sunnah wa al-Jama'ah.
+                        </li>
+                        <li>
+                            <strong>Partage sincère :</strong> Ce qui était à l'origine un espace de stockage personnel a été transformé en une plateforme gratuite, sans aucune publicité, conçue comme un bénéfice pour la communauté.
+                        </li>
+                        <li>
+                            <strong>Respect des droits :</strong> Nous veillons à ne partager que des fichiers dont la diffusion est permise ou qui sont tombés dans le domaine public, dans le respect des droits des auteurs et des maisons d'édition.
+                        </li>
+                    </ul>
+                </article>
+
+                <!-- Bloc 3 : La communauté -->
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-solid fa-hands-holding-circle"></i></div>
+                    <h2>Une œuvre partagée</h2>
+                    <p>
+                        Bien que le projet ait commencé de manière individuelle, la recherche du savoir est une œuvre collective. Si vous trouvez des erreurs ou souhaitez suggérer des améliorations, vous êtes les bienvenus.
+                    </p>
+                    <div class="actions-propos">
+                        <a href="connexion.html" class="bouton-principal">
+                            Créer un compte
+                        </a>
+                        <a href="livres.html" class="bouton-secondaire">
+                            <i class="fa-solid fa-book-open"></i> Explorer le catalogue
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="../index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="livres.html">Bibliothèque</a></li>
+                        <li><a href="categories.html">Collections</a></li>
+                        <li><a href="auteurs.html">Auteurs</a></li>
+                        <li><a href="a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="livres.html?categorie=aqida">العقيدة — Aqida</a></li>
+                        <li><a href="livres.html?categorie=hadith">الحديث — Hadith</a></li>
+                        <li><a href="livres.html?categorie=tafsir">التفسير — Tafsir</a></li>
+                        <li><a href="livres.html?categorie=fiqh">الفقه — Fiqh</a></li>
+                        <li><a href="livres.html?categorie=sira">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="#">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="../js/supabase-client.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

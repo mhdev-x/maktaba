@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Connectez-vous ou créez un compte Maktaba pour sauvegarder vos ouvrages favoris.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Connexion — Maktaba</title>
+</head>
+<body>
+
+    <!-- =========================================
+         EN-TÊTE & NAVIGATION
+         ========================================= -->
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="../index.html" class="logo">Maktaba</a>
+
+            <div class="liens-navigation">
+                <a href="../index.html" class="lien-navigation">Accueil</a>
+                <a href="livres.html" class="lien-navigation">Bibliothèque</a>
+                <a href="categories.html" class="lien-navigation">Collections</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="a-propos.html" class="lien-navigation">À propos</a>
+
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i> <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =========================================
+         CONTENU PRINCIPAL : AUTHENTIFICATION
+         ========================================= -->
+    <main id="contenu-principal" class="main-auth-split">
+        <div class="auth-conteneur-split">
+
+            <!-- ============ PANNEAU GAUCHE : BRANDING ============ -->
+            <aside class="panneau-branding">
+                <div class="forme-decorative forme-1"><i class="fa-solid fa-book-quran"></i></div>
+                <div class="forme-decorative forme-2"><i class="fa-solid fa-moon"></i></div>
+                <div class="forme-decorative forme-3"><i class="fa-solid fa-feather"></i></div>
+
+                <div class="branding-contenu">
+                    <a href="../index.html" class="logo-branding">
+                        Maktaba <span>مكتبة</span>
+                    </a>
+
+                    <div class="branding-citation">
+                        <i class="fa-solid fa-quote-left icone-citation"></i>
+                        <p class="texte-citation-branding">
+                            « Celui qui emprunte un chemin à la recherche d'une science,
+                            Allah lui facilite par cela un chemin vers le Paradis. »
+                        </p>
+                        <span class="source-citation-branding">— Rapporté par Muslim</span>
+                    </div>
+
+                    <div class="stats-branding">
+                        <div class="stat-branding-item">
+                            <strong>2 500+</strong>
+                            <span>Ouvrages</span>
+                        </div>
+                        <div class="stat-branding-item">
+                            <strong>150+</strong>
+                            <span>Auteurs</span>
+                        </div>
+                        <div class="stat-branding-item">
+                            <strong>12</strong>
+                            <span>Collections</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ============ PANNEAU DROIT : FORMULAIRE ============ -->
+            <div class="panneau-formulaire">
+
+                <a href="../index.html" class="bouton-retour-accueil" aria-label="Retour à l'accueil">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+
+                <div class="conteneur-formulaire-auth">
+
+                    <div class="en-tete-auth-premium">
+                        <div class="logo-mobile-auth">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                        </div>
+                        <h1 id="titre-auth">Bon retour</h1>
+                        <p id="description-auth">Connectez-vous pour retrouver vos lectures.</p>
+                    </div>
+
+                    <!-- Onglets segmentés animés -->
+                    <div class="onglets-auth-segment" id="onglets-segment" data-actif="connexion">
+                        <button type="button" class="onglet-segment actif" id="onglet-btn-connexion">Connexion</button>
+                        <button type="button" class="onglet-segment" id="onglet-btn-inscription">Inscription</button>
+                        <span class="curseur-onglet"></span>
+                    </div>
+
+                    <!-- FORMULAIRE CONNEXION -->
+                    <form class="formulaire-auth" id="form-connexion" autocomplete="on" novalidate>
+
+                        <div class="champ-groupe">
+                            <label for="email-connexion">Adresse email</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-envelope icone-champ"></i>
+                                <input type="email" id="email-connexion" name="email" placeholder="lecteur@maktaba.com" required>
+                                <i class="fa-solid fa-circle-check icone-validation"></i>
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="mot-de-passe-connexion">Mot de passe</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-lock icone-champ"></i>
+                                <input type="password" id="mot-de-passe-connexion" name="password" placeholder="Votre mot de passe" required minlength="6">
+                                <button class="bouton-oeil" type="button" data-cible="mot-de-passe-connexion" aria-label="Afficher le mot de passe">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="options-auth">
+                            <label class="case-souvenir">
+                                <input type="checkbox" id="souvenir-moi">
+                                <span>Se souvenir de moi</span>
+                            </label>
+                            <a href="#" class="lien-auth">Mot de passe oublié ?</a>
+                        </div>
+
+                        <button type="submit" class="bouton-principal bouton-auth-pleine-largeur">
+                            <span class="texte-bouton">Se connecter</span>
+                            <i class="fa-solid fa-arrow-right icone-fleche"></i>
+                            <i class="fa-solid fa-spinner icone-spinner" hidden></i>
+                        </button>
+
+                        <p class="message-auth" id="message-connexion" role="alert" hidden></p>
+
+                        <div class="separateur-auth"><span>ou continuer avec</span></div>
+
+                        <div class="boutons-social">
+                            <button type="button" class="bouton-social">
+                                <i class="fa-brands fa-google"></i> Google
+                            </button>
+                            <button type="button" class="bouton-social">
+                                <i class="fa-brands fa-github"></i> GitHub
+                            </button>
+                        </div>
+
+                        <div class="auth-bascule">
+                            <p>Nouveau sur Maktaba ? <a href="#" id="lien-vers-inscription">Créer un compte</a></p>
+                        </div>
+                    </form>
+
+                    <!-- FORMULAIRE INSCRIPTION -->
+                    <form class="formulaire-auth" id="form-inscription" autocomplete="on" hidden novalidate>
+
+                        <div class="champ-groupe">
+                            <label for="nom-inscription">Nom complet</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-user icone-champ"></i>
+                                <input type="text" id="nom-inscription" name="nom" placeholder="Votre nom" required minlength="2">
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="email-inscription">Adresse email</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-envelope icone-champ"></i>
+                                <input type="email" id="email-inscription" name="email" placeholder="lecteur@maktaba.com" required>
+                                <i class="fa-solid fa-circle-check icone-validation"></i>
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="mot-de-passe-inscription">Mot de passe</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-lock icone-champ"></i>
+                                <input type="password" id="mot-de-passe-inscription" name="password" placeholder="Minimum 6 caractères" required minlength="6">
+                                <button class="bouton-oeil" type="button" data-cible="mot-de-passe-inscription" aria-label="Afficher le mot de passe">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="force-mdp" id="force-mdp-conteneur">
+                                <div class="barres-force">
+                                    <span></span><span></span><span></span><span></span>
+                                </div>
+                                <small class="texte-force-mdp">Sécurité : <b>—</b></small>
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="confirm-mot-de-passe">Confirmer le mot de passe</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-lock icone-champ"></i>
+                                <input type="password" id="confirm-mot-de-passe" name="confirm-password" placeholder="Retapez le mot de passe" required minlength="6">
+                                <button class="bouton-oeil" type="button" data-cible="confirm-mot-de-passe" aria-label="Afficher le mot de passe">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <label class="case-souvenir case-conditions">
+                            <input type="checkbox" id="accepter-conditions" required>
+                            <span>J'accepte les <a href="#" class="lien-auth">conditions</a> de Maktaba</span>
+                        </label>
+
+                        <button type="submit" class="bouton-principal bouton-auth-pleine-largeur">
+                            <span class="texte-bouton">Créer mon compte</span>
+                            <i class="fa-solid fa-arrow-right icone-fleche"></i>
+                            <i class="fa-solid fa-spinner icone-spinner" hidden></i>
+                        </button>
+
+                        <p class="message-auth" id="message-inscription" role="alert" hidden></p>
+
+                        <div class="auth-bascule">
+                            <p>Vous avez déjà un compte ? <a href="#" id="lien-vers-connexion">Se connecter</a></p>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- =========================================
+         PIED DE PAGE (FOOTER)
+         ========================================= -->
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="../index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="livres.html">Bibliothèque</a></li>
+                        <li><a href="categories.html">Collections</a></li>
+                        <li><a href="auteurs.html">Auteurs</a></li>
+                        <li><a href="a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="livres.html?categorie=aqida">العقيدة — Aqida</a></li>
+                        <li><a href="livres.html?categorie=hadith">الحديث — Hadith</a></li>
+                        <li><a href="livres.html?categorie=tafsir">التفسير — Tafsir</a></li>
+                        <li><a href="livres.html?categorie=fiqh">الفقه — Fiqh</a></li>
+                        <li><a href="livres.html?categorie=sira">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="#">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="../js/supabase-client.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

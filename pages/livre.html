@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fiche détaillée d'un ouvrage disponible sur Maktaba : langue, édition, authentification et description.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Riyad as-Salihin — Maktaba</title>
+</head>
+<body>
+
+    <!-- =========================================
+         EN-TÊTE & NAVIGATION
+         ========================================= -->
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="../index.html" class="logo">Maktaba</a>
+            <div class="liens-navigation">
+                <a href="../index.html" class="lien-navigation">Accueil</a>
+                <a href="livres.html" class="lien-navigation actif">Bibliothèque</a>
+                <a href="categories.html" class="lien-navigation">Collections</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="a-propos.html" class="lien-navigation">À propos</a>
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i> 
+                        <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =========================================
+         CONTENU PRINCIPAL : PAGE LIVRE
+         ========================================= -->
+    <main id="contenu-principal">
+
+        <!-- Fil d'Ariane -->
+        <div class="fil-ariane-conteneur">
+            <nav class="fil-ariane">
+                <a href="../index.html">Accueil</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="livres.html">Bibliothèque</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="livres.html?categorie=hadith">Hadith</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="page-actuelle">Riyad as-Salihin</span>
+            </nav>
+        </div>
+
+        <!-- Section Présentation du Livre -->
+        <section class="section-presentation-livre">
+            <div class="conteneur-livre-details">
+                
+                <!-- Colonne Gauche : Couverture -->
+                <div class="colonne-couverture">
+                    <div class="grande-couverture">
+                        <span class="couverture-arabe">رياض الصالحين</span>
+                        <h3 class="couverture-titre">Riyad as-Salihin</h3>
+                        <p class="couverture-auteur">Imam An-Nawawi</p>
+                    </div>
+                </div>
+
+                <!-- Colonne Droite : Informations -->
+                <div class="colonne-infos">
+                    <div class="en-tete-infos">
+                        <span class="badge-categorie">Hadith</span>
+                        <h1 class="titre-livre">Riyad as-Salihin <br><span class="titre-arabe">رياض الصالحين</span></h1>
+                        <a href="auteurs.html" class="lien-auteur">Imam Yahya ibn Sharaf An-Nawawi</a>
+                    </div>
+
+                    <div class="meta-donnees-livre">
+                        <div class="donnee">
+                            <span class="donnee-label">Langue</span>
+                            <span class="donnee-valeur">Arabe / Français</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label">Pages</span>
+                            <span class="donnee-valeur">~ 1900 hadiths</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label">Édition de base</span>
+                            <span class="donnee-valeur">Dar Al-Minhaj</span>
+                        </div>
+                        <div class="donnee">
+                            <span class="donnee-label">Authentification</span>
+                            <span class="donnee-valeur">Cheikh Al-Albani</span>
+                        </div>
+                    </div>
+
+                    <div class="actions-livre">
+                        <button class="bouton-principal" type="button">
+                            <i class="fa-solid fa-book-open-reader"></i> Lire en ligne
+                        </button>
+                        <button class="bouton-secondaire btn-favori" type="button">
+                            <i class="fa-regular fa-bookmark"></i> Ajouter aux favoris
+                        </button>
+                    </div>
+
+                    <div class="description-livre">
+                        <h3>À propos de cet ouvrage</h3>
+                        <p>
+                            Le Jardin des Vertueux (Riyad as-Salihin) est l'un des recueils de hadiths les plus lus et les plus connus dans le monde musulman. 
+                            Compilé par l'Imam An-Nawawi au XIIIe siècle, il rassemble des hadiths authentiques couvrant tous les aspects de la foi, 
+                            du comportement et de la morale islamique, tirés principalement de Sahih Al-Bukhari et Sahih Muslim.
+                        </p>
+                        <p>
+                            Ce livre est un guide spirituel indispensable pour tout musulman souhaitant améliorer son caractère et se rapprocher de son Créateur.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================
+         PIED DE PAGE (FOOTER)
+         ========================================= -->
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="../index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="livres.html">Bibliothèque</a></li>
+                        <li><a href="categories.html">Collections</a></li>
+                        <li><a href="auteurs.html">Auteurs</a></li>
+                        <li><a href="a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="categories.html">العقيدة — Aqida</a></li>
+                        <li><a href="categories.html">الحديث — Hadith</a></li>
+                        <li><a href="categories.html">التفسير — Tafsir</a></li>
+                        <li><a href="categories.html">الفقه — Fiqh</a></li>
+                        <li><a href="categories.html">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="#">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts JS -->
+<script src="../js/supabase-client.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parcourez le catalogue complet de Maktaba : recherchez et filtrez les ouvrages islamiques par catégorie et par langue.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Bibliothèque — Maktaba</title>
+</head>
+<body>
+
+    <!-- =========================================
+         EN-TÊTE & NAVIGATION
+         ========================================= -->
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="../index.html" class="logo">Maktaba</a>
+
+            <div class="liens-navigation">
+                <a href="../index.html" class="lien-navigation">Accueil</a>
+                <a href="livres.html" class="lien-navigation actif">Bibliothèque</a>
+                <a href="categories.html" class="lien-navigation">Collections</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="a-propos.html" class="lien-navigation">À propos</a>
+
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i> 
+                        <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =========================================
+         CONTENU PRINCIPAL : LA BIBLIOTHÈQUE
+         ========================================= -->
+    <main id="contenu-principal">
+
+        <!-- En-tête de la page -->
+        <section class="section-en-tete-page">
+            <div class="conteneur-en-tete-page">
+                <span class="surtitre-section">Catalogue</span>
+                <h1 class="titre-page">La Bibliothèque</h1>
+                <p class="description-page">
+                    Explorez l'ensemble des ouvrages islamiques référencés.
+                    Filtrez par discipline, recherche ou langue.
+                </p>
+            </div>
+        </section>
+
+        <!-- =========================================
+             OUTILS : RECHERCHE + FILTRES
+             ========================================= -->
+        <section class="section-outils-bibliotheque">
+            <div class="conteneur-outils">
+
+                <div class="barre-recherche-bibliotheque">
+                    <i class="fa-solid fa-magnifying-glass icone-recherche"></i>
+                    <input type="search" id="champ-recherche" class="champ-recherche" placeholder="Rechercher un titre, un auteur, un mot-clé..." autocomplete="off">
+                </div>
+
+                <div class="zone-filtres">
+                    <div class="groupe-filtre">
+                        <span class="label-filtre">Catégorie</span>
+                        <div class="liste-filtres" id="filtres-categories">
+                            <button class="bouton-filtre actif" data-filtre="tous" type="button">Tous</button>
+                            <button class="bouton-filtre" data-filtre="aqida" type="button">Aqida</button>
+                            <button class="bouton-filtre" data-filtre="hadith" type="button">Hadith</button>
+                            <button class="bouton-filtre" data-filtre="tafsir" type="button">Tafsir</button>
+                            <button class="bouton-filtre" data-filtre="fiqh" type="button">Fiqh</button>
+                            <button class="bouton-filtre" data-filtre="sira" type="button">Sira</button>
+                            <button class="bouton-filtre" data-filtre="adab" type="button">Adab</button>
+                            <button class="bouton-filtre" data-filtre="usul" type="button">Usul al-Fiqh</button>
+                            <button class="bouton-filtre" data-filtre="arabe" type="button">Langue Arabe</button>
+                        </div>
+                    </div>
+
+                    <div class="groupe-filtre">
+                        <span class="label-filtre">Langue</span>
+                        <div class="liste-filtres" id="filtres-langues">
+                            <button class="bouton-filtre actif" data-filtre="tous" type="button">Toutes</button>
+                            <button class="bouton-filtre" data-filtre="arabe" type="button">Arabe</button>
+                            <button class="bouton-filtre" data-filtre="francais" type="button">Français</button>
+                            <button class="bouton-filtre" data-filtre="anglais" type="button">Anglais</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meta-resultats">
+                    <p class="compteur-resultats">
+                        <span id="nombre-resultats">8</span> ouvrages
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             GRILLE DES LIVRES
+             ========================================= -->
+        <section class="section-catalogue">
+            <div class="conteneur-catalogue">
+                <div class="grille-livres" id="grille-catalogue">
+
+                    <!-- Carte 1 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="aqida" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">كتاب التوحيد</span>
+                            <span class="badge-categorie">Aqida</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Kitab at-Tawhid</h3>
+                            <p class="auteur-carte-livre">Muhammad ibn Abd al-Wahhab</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 160 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 2 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="hadith" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">الأربعون النووية</span>
+                            <span class="badge-categorie">Hadith</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Les 40 Hadiths</h3>
+                            <p class="auteur-carte-livre">Imam An-Nawawi</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 120 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 3 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="tafsir" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">تفسير ابن كثير</span>
+                            <span class="badge-categorie">Tafsir</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Tafsir Ibn Kathir</h3>
+                            <p class="auteur-carte-livre">Isma'il ibn Kathir</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-layer-group"></i> 4 volumes</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 4 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="sira" data-langue="francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">الرحيق المختوم</span>
+                            <span class="badge-categorie">Sira</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Le Nectar Cacheté</h3>
+                            <p class="auteur-carte-livre">Safiur Rahman al-Mubarakpuri</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Français</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 540 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 5 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="hadith" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">رياض الصالحين</span>
+                            <span class="badge-categorie">Hadith</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Riyad as-Salihin</h3>
+                            <p class="auteur-carte-livre">Imam An-Nawawi</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 1900 hadiths</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 6 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="fiqh" data-langue="arabe">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">عمدة الأحكام</span>
+                            <span class="badge-categorie">Fiqh</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Umdat al-Ahkam</h3>
+                            <p class="auteur-carte-livre">Abdul Ghani al-Maqdisi</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 280 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 7 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="aqida" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">العقيدة الواسطية</span>
+                            <span class="badge-categorie">Aqida</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Al-Aqida al-Wasitiyya</h3>
+                            <p class="auteur-carte-livre">Ibn Taymiyyah</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 96 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Carte 8 -->
+                    <a href="livre.html" class="carte-livre" data-categorie="sira" data-langue="arabe francais">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">زاد المعاد</span>
+                            <span class="badge-categorie">Sira</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Zad al-Ma'ad</h3>
+                            <p class="auteur-carte-livre">Ibn al-Qayyim</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-layer-group"></i> 5 volumes</span>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+
+                <div class="message-vide" id="message-vide" hidden>
+                    <i class="fa-solid fa-book-open"></i>
+                    <p>Aucun ouvrage ne correspond à votre recherche.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================
+         PIED DE PAGE (FOOTER)
+         ========================================= -->
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="../index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="livres.html">Bibliothèque</a></li>
+                        <li><a href="categories.html">Collections</a></li>
+                        <li><a href="auteurs.html">Auteurs</a></li>
+                        <li><a href="a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="categories.html">العقيدة — Aqida</a></li>
+                        <li><a href="categories.html">الحديث — Hadith</a></li>
+                        <li><a href="categories.html">التفسير — Tafsir</a></li>
+                        <li><a href="categories.html">الفقه — Fiqh</a></li>
+                        <li><a href="categories.html">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="#">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts JS -->
+<script src="../js/supabase-client.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/livres.js"></script>
+</body>
+</html>

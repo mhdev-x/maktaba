@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Maktaba est une bibliothèque islamique numérique gratuite : livres de Aqida, Hadith, Tafsir, Fiqh et Sira, sélectionnés selon le Coran et la Sunnah.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Maktaba — Bibliothèque islamique</title>
+</head>
+<body>
+
+    <!-- =========================================
+         EN-TÊTE & NAVIGATION
+         ========================================= -->
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="index.html" class="logo">Maktaba</a>
+
+            <div class="liens-navigation">
+                <a href="index.html" class="lien-navigation actif">Accueil</a>
+                <a href="pages/livres.html" class="lien-navigation">Bibliothèque</a>
+                <a href="pages/categories.html" class="lien-navigation">Collections</a>
+                <a href="pages/auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="pages/a-propos.html" class="lien-navigation">À propos</a>
+
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i>
+                        <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="pages/connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="pages/connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =========================================
+         CONTENU PRINCIPAL
+         ========================================= -->
+    <main id="contenu-principal">
+
+        <!-- 1. SECTION HERO -->
+        <section class="section-hero">
+            <div class="conteneur-hero">
+                <div class="contenu-hero">
+                    <span class="surtitre-hero">مكتبة • MAKTABA</span>
+                    <h1 class="titre-hero">
+                        Une bibliothèque pour
+                        <span>apprendre et découvrir.</span>
+                    </h1>
+                    <p class="description-hero">
+                        Explorez une collection de livres et de ressources islamiques organisés pour faciliter la recherche, la lecture et l'apprentissage.
+                    </p>
+
+                    <div class="citation-hero">
+                        <p class="citation-texte">
+                            « Cette science est une religion, regardez de qui vous prenez votre religion ! »
+                        </p>
+                        <p class="citation-source">
+                            — Muhammad ibn Sirin <span>رحمه الله</span>
+                        </p>
+                        <p class="citation-arabe" dir="rtl">
+                            إِنَّ هَذَا الْعِلْمَ دِينٌ، فَانْظُرُوا عَمَّنْ تَأْخُذُونَ دِينَكُمْ
+                        </p>
+                        <p class="citation-reference">
+                            Sahih Muslim — Introduction
+                        </p>
+                    </div>
+
+                    <div class="actions-hero">
+                        <a href="pages/livres.html" class="bouton-principal">
+                            <i class="fa-solid fa-book-open"></i>
+                            Explorer la bibliothèque
+                        </a>
+                        <a href="pages/categories.html" class="bouton-secondaire">
+                            Découvrir les collections
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="visuel-hero">
+                    <div class="carte-livre-hero">
+                        <span class="ruban-livre">À la une</span>
+                        <div class="couverture-livre">
+                            <span class="couverture-arabe">رياض الصالحين</span>
+                            <h3 class="couverture-titre">Riyad as-Salihin</h3>
+                            <p class="couverture-auteur">Imam An-Nawawi</p>
+                        </div>
+                        <div class="infos-livre">
+                            <span class="etiquette-livre">
+                                <i class="fa-solid fa-bookmark"></i> Hadith
+                            </span>
+                            <span class="etiquette-livre">
+                                <i class="fa-solid fa-file-lines"></i> 1900 hadiths
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SECTION COLLECTIONS -->
+        <section class="section-collections">
+            <div class="conteneur-collections">
+                <div class="en-tete-section">
+                    <div>
+                        <span class="surtitre-section">Explorer</span>
+                        <h2 class="titre-section">Les collections</h2>
+                    </div>
+                    <p class="description-section">
+                        Découvrez les ouvrages de Maktaba classés par domaine de connaissance.
+                    </p>
+                </div>
+
+                <div class="grille-collections">
+                    <a href="pages/livres.html?categorie=aqida" class="carte-collection">
+                        <span class="numero-collection">01</span>
+                        <div class="contenu-collection">
+                            <i class="fa-solid fa-book-open"></i>
+                            <h3>Aqida</h3>
+                            <p>Ouvrages sur la croyance et l'unicité d'Allah.</p>
+                        </div>
+                        <i class="fa-solid fa-arrow-right fleche-collection"></i>
+                    </a>
+
+                    <a href="pages/livres.html?categorie=hadith" class="carte-collection">
+                        <span class="numero-collection">02</span>
+                        <div class="contenu-collection">
+                            <i class="fa-solid fa-scroll"></i>
+                            <h3>Hadith</h3>
+                            <p>Recueils prophétiques, explications et sciences du hadith.</p>
+                        </div>
+                        <i class="fa-solid fa-arrow-right fleche-collection"></i>
+                    </a>
+
+                    <a href="pages/livres.html?categorie=tafsir" class="carte-collection">
+                        <span class="numero-collection">03</span>
+                        <div class="contenu-collection">
+                            <i class="fa-solid fa-book-quran"></i>
+                            <h3>Tafsir</h3>
+                            <p>Ouvrages d'explication et de commentaire du Coran.</p>
+                        </div>
+                        <i class="fa-solid fa-arrow-right fleche-collection"></i>
+                    </a>
+
+                    <a href="pages/livres.html?categorie=fiqh" class="carte-collection">
+                        <span class="numero-collection">04</span>
+                        <div class="contenu-collection">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                            <h3>Fiqh</h3>
+                            <p>Ouvrages consacrés à la jurisprudence islamique.</p>
+                        </div>
+                        <i class="fa-solid fa-arrow-right fleche-collection"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SECTION LIVRES MIS EN AVANT -->
+        <section class="section-livres">
+            <div class="conteneur-livres">
+                <div class="en-tete-section">
+                    <div>
+                        <span class="surtitre-section">Sélection</span>
+                        <h2 class="titre-section">Livres mis en avant</h2>
+                    </div>
+                    <a href="pages/livres.html" class="lien-voir-tout">
+                        Voir toute la bibliothèque
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="grille-livres">
+                    <a href="pages/livre.html" class="carte-livre">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">كتاب التوحيد</span>
+                            <span class="badge-categorie">Aqida</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Kitab at-Tawhid</h3>
+                            <p class="auteur-carte-livre">Muhammad ibn Abd al-Wahhab</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 160 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="pages/livre.html" class="carte-livre">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">الأربعون النووية</span>
+                            <span class="badge-categorie">Hadith</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Les 40 Hadiths</h3>
+                            <p class="auteur-carte-livre">Imam An-Nawawi</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 120 pages</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="pages/livre.html" class="carte-livre">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">تفسير ابن كثير</span>
+                            <span class="badge-categorie">Tafsir</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Tafsir Ibn Kathir</h3>
+                            <p class="auteur-carte-livre">Isma'il ibn Kathir</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Arabe / FR</span>
+                                <span><i class="fa-solid fa-layer-group"></i> 4 volumes</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="pages/livre.html" class="carte-livre">
+                        <div class="visuel-carte-livre">
+                            <span class="visuel-arabe">الرحيق المختوم</span>
+                            <span class="badge-categorie">Sira</span>
+                        </div>
+                        <div class="corps-carte-livre">
+                            <h3 class="titre-carte-livre">Le Nectar Cacheté</h3>
+                            <p class="auteur-carte-livre">Safiur Rahman al-Mubarakpuri</p>
+                            <div class="pied-carte-livre">
+                                <span><i class="fa-solid fa-language"></i> Français</span>
+                                <span><i class="fa-solid fa-file-lines"></i> 540 pages</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SECTION LES GRANDS AUTEURS -->
+        <section class="section-auteurs">
+            <div class="conteneur-auteurs">
+                <div class="en-tete-section">
+                    <div>
+                        <span class="surtitre-section">Héritage</span>
+                        <h2 class="titre-section">Les grands auteurs</h2>
+                    </div>
+                    <a href="pages/auteurs.html" class="lien-voir-tout">
+                        Tous les auteurs
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="grille-auteurs">
+                    <a href="pages/auteurs.html" class="carte-auteur">
+                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
+                        <span class="nom-arabe-auteur">الإمام النووي</span>
+                        <h3 class="nom-auteur">Imam An-Nawawi</h3>
+                        <span class="epoque-auteur">VIIe siècle de l'Hégire (XIIIe G)</span>
+                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 5 ouvrages</span>
+                    </a>
+
+                    <a href="pages/auteurs.html" class="carte-auteur">
+                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
+                        <span class="nom-arabe-auteur">ابن كثير</span>
+                        <h3 class="nom-auteur">Ibn Kathir</h3>
+                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
+                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 4 ouvrages</span>
+                    </a>
+
+                    <a href="pages/auteurs.html" class="carte-auteur">
+                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
+                        <span class="nom-arabe-auteur">ابن تيمية</span>
+                        <h3 class="nom-auteur">Ibn Taymiyyah</h3>
+                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
+                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 7 ouvrages</span>
+                    </a>
+
+                    <a href="pages/auteurs.html" class="carte-auteur">
+                        <div class="avatar-auteur"><i class="fa-solid fa-feather-pointed"></i></div>
+                        <span class="nom-arabe-auteur">ابن قيم الجوزية</span>
+                        <h3 class="nom-auteur">Ibn al-Qayyim</h3>
+                        <span class="epoque-auteur">VIIIe siècle de l'Hégire (XIVe G)</span>
+                        <span class="nombre-ouvrages"><i class="fa-solid fa-book"></i> 6 ouvrages</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================
+         PIED DE PAGE (FOOTER)
+         ========================================= -->
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="pages/livres.html">Bibliothèque</a></li>
+                        <li><a href="pages/categories.html">Collections</a></li>
+                        <li><a href="pages/auteurs.html">Auteurs</a></li>
+                        <li><a href="pages/a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="pages/categories.html">العقيدة — Aqida</a></li>
+                        <li><a href="pages/categories.html">الحديث — Hadith</a></li>
+                        <li><a href="pages/categories.html">التفسير — Tafsir</a></li>
+                        <li><a href="pages/categories.html">الفقه — Fiqh</a></li>
+                        <li><a href="pages/categories.html">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="#">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="js/supabase-client.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
