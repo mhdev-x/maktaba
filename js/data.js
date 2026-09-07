@@ -74,7 +74,7 @@ async function compterLivresParCategorie() {
 const SELECTION_LIVRE = `
     id, slug, titre, titre_arabe, description, langue, langue_originale,
     annee_publication, editeur, edition, nb_pages, nb_volumes, nb_hadiths,
-    authentification, couverture_url, source_url,
+    authentification, couverture_url, source_url, attribution,
     auteurs(nom_complet, nom_arabe, slug),
     livres_categories(categories(slug, nom)),
     fichiers_livres(type, url, est_public)

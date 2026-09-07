@@ -89,6 +89,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? `<p>${livre.description}</p>`
         : `<p>Aucune description disponible pour le moment.</p>`;
 
+    let citationSource = document.getElementById("citation-source");
+    let citationSourceTexte = document.getElementById("citation-source-texte");
+    if (citationSource && citationSourceTexte) {
+        if (livre.attribution) {
+            citationSourceTexte.textContent = livre.attribution;
+            citationSource.hidden = false;
+        } else {
+            citationSource.hidden = true;
+        }
+    }
+
     // --- Bouton "Lire en ligne" : ouvre le lecteur intégré si un fichier est disponible ---
     let boutonLire = document.getElementById("bouton-lire-livre");
     let fichierPdf = (livre.fichiers_livres || []).find(f => f.type === "pdf");

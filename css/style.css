@@ -2449,6 +2449,24 @@ body.theme-clair .badge-collection-meta {
     padding: 10px 12px;
 }
 
+.citation-source {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--couleur-accent);
+    background: rgba(200, 169, 107, 0.06);
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    font-style: italic;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.citation-source i {
+    color: var(--couleur-accent);
+    margin-top: 2px;
+}
+
 /* =========================================
    LECTEUR PDF INTÉGRÉ
    ========================================= */

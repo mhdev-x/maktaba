@@ -119,6 +119,7 @@ create table public.livres (
     authentification text,
     couverture_url   text,              -- image dans le bucket "couvertures" (public)
     source_url       text,              -- lien externe si le fichier n'est pas hébergé
+    attribution      text,              -- citation obligatoire pour un contenu importé (source, auteur/traducteur/éditeur)
     created_at       timestamptz not null default now()
 );
 
