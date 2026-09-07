@@ -298,3 +298,38 @@
         grid-template-columns: 1fr;
     }
 }
+/* ===================================================
+   5. LECTEUR PDF — SOMMAIRE EN TIROIR SUR MOBILE
+   =================================================== */
+@media (max-width: 850px) {
+    .bouton-basculer-sommaire-mobile {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sommaire-lecteur {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 80%;
+        max-width: 300px;
+        z-index: 1200;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .sommaire-lecteur.sommaire-ouvert {
+        transform: translateX(0);
+    }
+
+    .titre-lecteur {
+        font-size: 0.9rem;
+    }
+
+    .zone-canvas {
+        padding: 16px;
+    }
+}

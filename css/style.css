@@ -2352,3 +2352,263 @@ body.theme-clair .badge-collection-meta {
     margin-top: -8px;
     margin-bottom: 24px;
 }
+
+/* Formulaire de contribution : select à l'intérieur d'un .input-avec-icone
+   et textarea autonome, avec le même habillage que les champs texte. */
+.input-avec-icone select {
+    width: 100%;
+    padding: 13px 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background-color: var(--couleur-surface);
+    color: var(--couleur-texte);
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+    appearance: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-avec-icone select:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(200, 169, 107, 0.1);
+}
+
+.champ-groupe textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background-color: transparent;
+    color: var(--couleur-texte);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.champ-groupe textarea:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(200, 169, 107, 0.1);
+}
+
+/* Cartes "Mes propositions" */
+.carte-contribution {
+    padding: 18px 20px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    margin-bottom: 14px;
+}
+
+.entete-contribution {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.entete-contribution h4 {
+    color: var(--couleur-texte);
+    font-size: 1.05rem;
+}
+
+.badge-statut-contribution {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    background: rgba(200, 169, 107, 0.12);
+    color: var(--couleur-accent);
+}
+
+.carte-contribution.statut-approuvee .badge-statut-contribution {
+    background: rgba(50, 180, 100, 0.12);
+    color: #4cc47a;
+}
+
+.carte-contribution.statut-rejetee .badge-statut-contribution {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff8080;
+}
+
+.auteur-contribution, .date-contribution {
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    margin-top: 6px;
+}
+
+.commentaire-moderateur {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: var(--couleur-texte);
+    background: rgba(245, 241, 232, 0.04);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+/* =========================================
+   LECTEUR PDF INTÉGRÉ
+   ========================================= */
+body.page-lecteur {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.entete-lecteur {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background-color: var(--couleur-surface);
+    border-bottom: 1px solid rgba(245, 241, 232, 0.08);
+    flex-shrink: 0;
+}
+
+.bouton-retour-lecteur {
+    color: var(--couleur-texte);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+.bouton-retour-lecteur:hover { background-color: rgba(245, 241, 232, 0.06); }
+
+.titre-lecteur {
+    flex-grow: 1;
+    font-size: 1.05rem;
+    color: var(--couleur-texte);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conteneur-lecteur {
+    display: flex;
+    flex-grow: 1;
+    min-height: 0; /* nécessaire pour que les enfants en scroll fonctionnent en flexbox */
+}
+
+.sommaire-lecteur {
+    width: 260px;
+    flex-shrink: 0;
+    background-color: var(--couleur-surface);
+    border-right: 1px solid rgba(245, 241, 232, 0.08);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sommaire-lecteur h2 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--couleur-secondaire);
+    margin-bottom: 16px;
+}
+
+.lien-sommaire {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--couleur-texte);
+    padding: 10px 0;
+    font-size: 0.92rem;
+    border-bottom: 1px solid rgba(245, 241, 232, 0.05);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.lien-sommaire:hover { color: var(--couleur-accent); }
+
+.zone-lecture {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.barre-outils-lecteur {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px;
+    background-color: var(--couleur-surface);
+    border-bottom: 1px solid rgba(245, 241, 232, 0.08);
+    flex-shrink: 0;
+}
+
+.barre-outils-lecteur button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+.barre-outils-lecteur button:hover {
+    border-color: var(--couleur-accent);
+    color: var(--couleur-accent);
+}
+
+.indicateur-page {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--couleur-secondaire);
+    font-size: 0.9rem;
+}
+
+#champ-page-actuelle {
+    width: 56px;
+    padding: 6px 8px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+}
+
+.separateur-outils {
+    width: 1px;
+    height: 24px;
+    background: rgba(245, 241, 232, 0.12);
+}
+
+#pourcentage-zoom {
+    color: var(--couleur-secondaire);
+    font-size: 0.85rem;
+    min-width: 42px;
+    text-align: center;
+}
+
+.bouton-basculer-sommaire-mobile { display: none; }
+
+.zone-canvas {
+    flex-grow: 1;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    padding: 32px;
+    background-color: var(--couleur-fond);
+}
+
+#canvas-pdf {
+    background-color: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    height: fit-content;
+}
+
+body.theme-clair .zone-canvas { background-color: #EDEAE3; }

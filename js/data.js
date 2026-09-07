@@ -220,6 +220,147 @@ async function chargerFavorisUtilisateur(utilisateurId) {
 }
 
 // ==========================================
+// CONTRIBUTIONS (proposition d'ouvrages)
+// ==========================================
+
+// Envoie une proposition d'ouvrage. RLS impose auth.uid() = utilisateur_id.
+async function proposerContribution(utilisateurId, proposition) {
+    if (!supabaseClient || !utilisateurId) return { succes: false };
+
+    const { error } = await supabaseClient.from("contributions").insert({
+        utilisateur_id: utilisateurId,
+        titre_propose: proposition.titre_propose,
+        auteur_propose: proposition.auteur_propose || null,
+        categorie_proposee: proposition.categorie_proposee || null,
+        description: proposition.description || null,
+        lien_source: proposition.lien_source || null,
+    });
+
+    if (error) {
+        console.error("Maktaba : erreur d'envoi de la contribution.", error);
+        return { succes: false, erreur: error };
+    }
+    return { succes: true };
+}
+
+// Charge les contributions de l'utilisateur connecté, les plus récentes en premier.
+async function chargerMesContributions(utilisateurId) {
+    if (!supabaseClient || !utilisateurId) return [];
+
+    const { data, error } = await supabaseClient
+        .from("contributions")
+        .select("id, titre_propose, auteur_propose, statut, commentaire_moderateur, created_at")
+        .eq("utilisateur_id", utilisateurId)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Maktaba : erreur de chargement des contributions.", error);
+        return [];
+    }
+    return data || [];
+}
+
+function maktabaLabelStatutContribution(statut) {
+    let libelles = {
+        en_attente: "En attente",
+        approuvee: "Approuvée",
+        rejetee: "Rejetée",
+    };
+    return libelles[statut] || statut;
+}
+
+function maktabaCarteContributionHTML(contribution) {
+    let date = new Date(contribution.created_at).toLocaleDateString("fr-FR", {
+        year: "numeric", month: "long", day: "numeric",
+    });
+    let commentaire = contribution.commentaire_moderateur
+        ? `<p class="commentaire-moderateur"><i class="fa-solid fa-comment"></i> ${contribution.commentaire_moderateur}</p>`
+        : "";
+    return `
+        <div class="carte-contribution statut-${contribution.statut}">
+            <div class="entete-contribution">
+                <h4>${contribution.titre_propose}</h4>
+                <span class="badge-statut-contribution">${maktabaLabelStatutContribution(contribution.statut)}</span>
+            </div>
+            ${contribution.auteur_propose ? `<p class="auteur-contribution">${contribution.auteur_propose}</p>` : ""}
+            <p class="date-contribution">Proposé le ${date}</p>
+            ${commentaire}
+        </div>
+    `;
+}
+
+// ==========================================
+// FICHIERS (Storage) — génère une URL de lecture pour un fichier de livre
+// ==========================================
+
+// "livres"/"audio" sont des buckets privés : il faut une URL signée (temporaire).
+// Seuls les visiteurs connectés peuvent en obtenir une pour un fichier non public
+// (appliqué par les policies RLS sur storage.objects).
+async function obtenirUrlFichier(fichier) {
+    if (!supabaseClient || !fichier) return null;
+    let bucket = fichier.type === "audio" ? "audio" : "livres";
+
+    if (fichier.est_public) {
+        const { data } = supabaseClient.storage.from(bucket).getPublicUrl(fichier.url);
+        return data?.publicUrl || null;
+    }
+
+    const { data, error } = await supabaseClient.storage
+        .from(bucket)
+        .createSignedUrl(fichier.url, 3600); // valable 1h
+
+    if (error) {
+        console.error("Maktaba : erreur de génération du lien de lecture.", error);
+        return null;
+    }
+    return data?.signedUrl || null;
+}
+
+// ==========================================
+// PROGRESSION DE LECTURE
+// ==========================================
+
+async function chargerProgression(livreId, utilisateurId) {
+    if (!supabaseClient || !utilisateurId) return null;
+
+    const { data, error } = await supabaseClient
+        .from("progression_lecture")
+        .select("page_actuelle, page_totale")
+        .eq("livre_id", livreId)
+        .eq("utilisateur_id", utilisateurId)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Maktaba : erreur de chargement de la progression.", error);
+        return null;
+    }
+    return data;
+}
+
+async function enregistrerProgression(livreId, utilisateurId, pageActuelle, pageTotale) {
+    if (!supabaseClient || !utilisateurId) return false;
+
+    const { error } = await supabaseClient
+        .from("progression_lecture")
+        .upsert(
+            {
+                utilisateur_id: utilisateurId,
+                livre_id: livreId,
+                page_actuelle: pageActuelle,
+                page_totale: pageTotale,
+                updated_at: new Date().toISOString(),
+            },
+            { onConflict: "utilisateur_id,livre_id" }
+        );
+
+    if (error) {
+        console.error("Maktaba : erreur d'enregistrement de la progression.", error);
+        return false;
+    }
+    return true;
+}
+
+// ==========================================
 // GABARITS HTML (mêmes classes CSS que l'existant, donc aucun style à retoucher)
 // ==========================================
 

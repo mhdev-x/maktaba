@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Découvrez les grands savants et auteurs islamiques référencés sur Maktaba, avec leurs biographies et l'ensemble de leurs ouvrages.">
+    <meta name="description" content="Proposez un ouvrage islamique à ajouter au catalogue de Maktaba. Votre proposition sera examinée par un modérateur avant publication.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <title>Auteurs — Maktaba</title>
+    <title>Proposer un ouvrage — Maktaba</title>
 </head>
 <body>
 
@@ -21,16 +21,15 @@
                 <a href="../index.html" class="lien-navigation">Accueil</a>
                 <a href="livres.html" class="lien-navigation">Bibliothèque</a>
                 <a href="categories.html" class="lien-navigation">Collections</a>
-                <a href="auteurs.html" class="lien-navigation actif">Auteurs</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
                 <a href="a-propos.html" class="lien-navigation">À propos</a>
 
                 <div class="actions-navigation-mobile">
                     <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
                         <i class="fa-solid fa-moon"></i> <span>Basculer le thème</span>
                     </button>
-                   <button class="bouton-recherche btn-ouvrir-recherche" type="button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Rechercher</span>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
                     </button>
                     <div class="compte-mobile" id="compte-mobile">
     <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
@@ -45,9 +44,8 @@
                 <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-               <button class="bouton-recherche btn-ouvrir-recherche" type="button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Rechercher</span>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
                 </button>
                 <div class="menu-compte" id="menu-compte">
     <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
@@ -76,19 +74,92 @@
 
         <section class="section-en-tete-page">
             <div class="conteneur-en-tete-page">
-                <span class="surtitre-section">Héritage</span>
-                <h1 class="titre-page">Les Auteurs</h1>
+                <span class="surtitre-section">Communauté</span>
+                <h1 class="titre-page">Proposer un ouvrage</h1>
                 <p class="description-page">
-                    Découvrez les grands savants et auteurs qui ont marqué l'histoire des sciences islamiques. Retrouvez leurs biographies et l'ensemble de leurs ouvrages.
+                    Vous connaissez un ouvrage fiable qui mériterait de rejoindre Maktaba ? Proposez-le à la communauté.
+                    Chaque proposition est examinée par un modérateur avant publication.
                 </p>
             </div>
         </section>
 
-        <section class="section-auteurs">
-            <div class="conteneur-auteurs">
-                <div class="grille-auteurs" id="grille-auteurs">
-                    <p class="message-vide-inline" id="message-chargement">Chargement des auteurs...</p>
-                </div>
+        <section class="section-a-propos">
+            <div class="conteneur-a-propos">
+
+                <!-- État : non connecté -->
+                <article class="bloc-texte-propos" id="bloc-non-connecte" hidden>
+                    <div class="icone-propos"><i class="fa-solid fa-lock"></i></div>
+                    <h2>Connexion requise</h2>
+                    <p>Pour garder une trace de qui propose quoi (et pouvoir vous répondre en cas de question), il faut être connecté pour proposer un ouvrage.</p>
+                    <div class="actions-propos">
+                        <a href="connexion.html" class="bouton-principal">Se connecter</a>
+                    </div>
+                </article>
+
+                <!-- État : formulaire -->
+                <article class="bloc-texte-propos" id="bloc-formulaire" hidden>
+                    <div class="icone-propos"><i class="fa-solid fa-feather-pointed"></i></div>
+                    <h2>Votre proposition</h2>
+
+                    <form class="formulaire-auth" id="form-proposer" novalidate>
+
+                        <div class="champ-groupe">
+                            <label for="titre-propose">Titre de l'ouvrage <span aria-hidden="true">*</span></label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-book icone-champ"></i>
+                                <input type="text" id="titre-propose" name="titre_propose" placeholder="Ex : Fath al-Bari" required minlength="2">
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="auteur-propose">Auteur (si connu)</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-feather icone-champ"></i>
+                                <input type="text" id="auteur-propose" name="auteur_propose" placeholder="Ex : Ibn Hajar Al-Asqalani">
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="categorie-proposee">Catégorie</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-tags icone-champ"></i>
+                                <select id="categorie-proposee" name="categorie_proposee">
+                                    <option value="">Je ne sais pas / autre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="lien-source-propose">Lien vers une source (optionnel)</label>
+                            <div class="input-avec-icone">
+                                <i class="fa-solid fa-link icone-champ"></i>
+                                <input type="url" id="lien-source-propose" name="lien_source" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <div class="champ-groupe">
+                            <label for="description-proposee">Pourquoi cet ouvrage ? (optionnel)</label>
+                            <textarea id="description-proposee" name="description" rows="4" placeholder="Contexte, édition recommandée, pourquoi il mériterait sa place sur Maktaba..."></textarea>
+                        </div>
+
+                        <button class="bouton-principal bouton-auth-pleine-largeur" type="submit">
+                            <span>Envoyer ma proposition</span>
+                            <i class="fa-solid fa-spinner icone-spinner" hidden></i>
+                        </button>
+
+                        <p class="message-auth" id="message-proposition" role="alert" hidden></p>
+                    </form>
+                </article>
+
+                <!-- Mes propositions -->
+                <article class="bloc-texte-propos" id="bloc-mes-contributions" hidden>
+                    <div class="icone-propos"><i class="fa-solid fa-list-check"></i></div>
+                    <h2>Mes propositions</h2>
+                    <div id="liste-mes-contributions">
+                        <p class="message-vide-inline">Chargement...</p>
+                    </div>
+                </article>
+
             </div>
         </section>
 
@@ -143,9 +214,10 @@
         </div>
     </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
 <script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
-<script src="../js/auteurs.js"></script>
+<script src="../js/proposer.js"></script>
 </body>
 </html>

@@ -89,12 +89,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? `<p>${livre.description}</p>`
         : `<p>Aucune description disponible pour le moment.</p>`;
 
-    // --- Bouton "Lire en ligne" : dépend des fichiers rattachés au livre ---
+    // --- Bouton "Lire en ligne" : ouvre le lecteur intégré si un fichier est disponible ---
     let boutonLire = document.getElementById("bouton-lire-livre");
-    let fichierLisible = (livre.fichiers_livres || [])[0]; // RLS ne renvoie déjà que ce que l'utilisateur a le droit de voir
+    let fichierPdf = (livre.fichiers_livres || []).find(f => f.type === "pdf");
     if (boutonLire) {
-        if (fichierLisible) {
-            boutonLire.addEventListener("click", () => window.open(fichierLisible.url, "_blank", "noopener"));
+        if (fichierPdf) {
+            boutonLire.addEventListener("click", () => {
+                window.location.href = `lecteur.html?slug=${encodeURIComponent(livre.slug)}`;
+            });
         } else {
             boutonLire.disabled = true;
             boutonLire.title = "Fichier non disponible pour le moment";
