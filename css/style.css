@@ -387,6 +387,17 @@ body.theme-clair .dropdown-item:hover {
     opacity: 0.92;
 }
 
+.bouton-principal:disabled,
+.bouton-secondaire:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.bouton-principal:disabled:hover {
+    transform: none;
+}
+
 .bouton-secondaire {
     border: 1px solid rgba(245, 241, 232, 0.15);
     color: var(--couleur-texte);
