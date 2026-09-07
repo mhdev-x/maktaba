@@ -105,6 +105,22 @@
             </div>
         </section>
 
+        <!-- Mes lectures en cours -->
+        <section class="section-oeuvres-auteur">
+            <div class="conteneur-catalogue">
+                <div class="en-tete-section">
+                    <div>
+                        <span class="surtitre-section">Reprendre où je m'étais arrêté</span>
+                        <h2 class="titre-section">Mes lectures en cours</h2>
+                    </div>
+                </div>
+
+                <div class="grille-progression" id="grille-lectures-en-cours">
+                    <p class="message-vide-inline">Chargement...</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Mes ouvrages favoris -->
         <section class="section-oeuvres-auteur">
             <div class="conteneur-catalogue">
@@ -229,6 +245,15 @@
                 grilleFavoris.innerHTML = favoris.length
                     ? favoris.map(maktabaCarteLivreHTML).join("")
                     : `<p class="message-vide-inline">Vous n'avez encore ajouté aucun favori. <a href="livres.html">Parcourir la bibliothèque</a>.</p>`;
+            }
+
+            // --- Mes lectures en cours ---
+            let grilleLectures = document.getElementById("grille-lectures-en-cours");
+            if (grilleLectures) {
+                let lectures = await chargerLectureEnCours(utilisateur.id);
+                grilleLectures.innerHTML = lectures.length
+                    ? lectures.map(maktabaCarteProgressionHTML).join("")
+                    : `<p class="message-vide-inline">Aucune lecture en cours. <a href="livres.html">Commencer un livre</a>.</p>`;
             }
         });
     </script>

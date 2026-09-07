@@ -219,6 +219,45 @@ async function chargerFavorisUtilisateur(utilisateurId) {
     return (data || []).map(ligne => ligne.livres).filter(Boolean);
 }
 
+// Charge les lectures en cours d'un utilisateur (progression_lecture + infos du livre).
+async function chargerLectureEnCours(utilisateurId) {
+    if (!supabaseClient || !utilisateurId) return [];
+
+    const { data, error } = await supabaseClient
+        .from("progression_lecture")
+        .select("page_actuelle, page_totale, updated_at, livres(slug, titre, titre_arabe, auteurs(nom_complet))")
+        .eq("utilisateur_id", utilisateurId)
+        .order("updated_at", { ascending: false });
+
+    if (error) {
+        console.error("Maktaba : erreur de chargement de la progression de lecture.", error);
+        return [];
+    }
+    return (data || []).filter(ligne => ligne.livres);
+}
+
+function maktabaCarteProgressionHTML(item) {
+    let livre = item.livres;
+    let pourcentage = item.page_totale
+        ? Math.min(100, Math.round((item.page_actuelle / item.page_totale) * 100))
+        : 0;
+    let nomAuteur = livre.auteurs?.nom_complet;
+
+    return `
+        <a href="${MAKTABA_BASE_PAGES}lecteur.html?slug=${encodeURIComponent(livre.slug)}" class="carte-progression">
+            <div class="entete-progression">
+                <h4>${livre.titre}</h4>
+                <span class="pourcentage-progression">${pourcentage}%</span>
+            </div>
+            ${nomAuteur ? `<p class="auteur-progression">${nomAuteur}</p>` : ""}
+            <div class="barre-progression-conteneur">
+                <div class="barre-progression-remplissage" style="width: ${pourcentage}%;"></div>
+            </div>
+            <p class="page-progression">Page ${item.page_actuelle} / ${item.page_totale || "?"}</p>
+        </a>
+    `;
+}
+
 // ==========================================
 // CONTRIBUTIONS (proposition d'ouvrages)
 // ==========================================

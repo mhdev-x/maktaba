@@ -2479,6 +2479,74 @@ body.theme-clair .badge-collection-meta {
 }
 
 /* =========================================
+   MES LECTURES EN COURS (profil)
+   ========================================= */
+.grille-progression {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.carte-progression {
+    display: block;
+    padding: 18px 20px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    color: var(--couleur-texte);
+    transition: border-color 0.2s ease;
+}
+
+.carte-progression:hover {
+    border-color: var(--couleur-accent);
+}
+
+.entete-progression {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.entete-progression h4 {
+    font-size: 1.05rem;
+    color: var(--couleur-texte);
+}
+
+.pourcentage-progression {
+    font-weight: 700;
+    color: var(--couleur-accent);
+    white-space: nowrap;
+}
+
+.auteur-progression {
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    margin-top: 4px;
+}
+
+.barre-progression-conteneur {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(245, 241, 232, 0.08);
+    margin-top: 14px;
+    overflow: hidden;
+}
+
+.barre-progression-remplissage {
+    height: 100%;
+    background: var(--couleur-accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.page-progression {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    color: var(--couleur-secondaire);
+}
+
+/* =========================================
    LECTEUR PDF INTÉGRÉ
    ========================================= */
 body.page-lecteur {
