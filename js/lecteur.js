@@ -94,7 +94,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let document_;
     try {
-        document_ = await pdfjsLib.getDocument({ url: urlFichier }).promise;
+        document_ = await pdfjsLib.getDocument({
+            url: urlFichier,
+            cMapUrl: `${PDFJS_BASE}/cmaps/`,
+            cMapPacked: true,
+            standardFontDataUrl: `${PDFJS_BASE}/standard_fonts/`,
+            wasmUrl: `${PDFJS_BASE}/wasm/`,
+        }).promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
         afficherMessage("Ce fichier n'a pas pu être ouvert.");
