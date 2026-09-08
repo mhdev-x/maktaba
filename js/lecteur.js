@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let document_;
     try {
-        document_ = await pdfjsLib.getDocument(urlFichier).promise;
+        document_ = await pdfjsLib.getDocument({ url: urlFichier }).promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
         afficherMessage("Ce fichier n'a pas pu être ouvert.");
