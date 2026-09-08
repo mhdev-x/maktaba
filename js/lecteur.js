@@ -1,12 +1,28 @@
 // ==========================================================================
 // MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
-// PDF.js n'est plus distribué en script classique sur les CDN récents :
-// on le charge via import() dynamique, ce qui reste compatible avec un
-// fichier JS classique (pas besoin de <script type="module">).
+// PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
+// externe : structure garantie stable, aucune dépendance à un tiers pour
+// une fonctionnalité centrale du site. Chargé en import() dynamique, car
+// PDF.js n'est distribué qu'en module ES (pas de <script> classique).
 // ==========================================================================
 
-const PDFJS_VERSION = "6.1.200";
-const PDFJS_BASE = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}`;
+// ==========================================================================
+// MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
+// PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
+// externe : structure garantie stable (lib, worker, cmaps, polices et wasm
+// viennent tous du même paquet officiel vérifié), aucune dépendance à un
+// tiers pour une fonctionnalité centrale du site. Chargé en import()
+// dynamique, car PDF.js n'est distribué qu'en module ES.
+// ==========================================================================
+
+// Résolu à partir de l'URL réelle de CE script, donc correct quelle que soit
+// la page qui l'inclut (racine ou pages/).
+const PDFJS_BASE = (() => {
+    let urlScript = document.currentScript ? document.currentScript.src : null;
+    return urlScript
+        ? new URL("vendor/pdfjs/", urlScript).href
+        : new URL("vendor/pdfjs/", window.location.href).href; // repli improbable
+})();
 
 document.addEventListener("DOMContentLoaded", async () => {
     let parametres = new URLSearchParams(window.location.search);
@@ -81,11 +97,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // --- Chargement de PDF.js ---
+    // --- Chargement de PDF.js (fichiers locaux, js/vendor/pdfjs/) ---
     let pdfjsLib;
     try {
-        pdfjsLib = await import(`${PDFJS_BASE}/pdf.min.mjs`);
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}/pdf.worker.min.mjs`;
+        pdfjsLib = await import(`${PDFJS_BASE}pdf.mjs`);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.mjs`;
     } catch (erreur) {
         console.error("Maktaba : erreur de chargement de PDF.js.", erreur);
         afficherMessage("Le lecteur n'a pas pu se charger. Vérifiez votre connexion.");
@@ -96,10 +112,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         document_ = await pdfjsLib.getDocument({
             url: urlFichier,
-            cMapUrl: `${PDFJS_BASE}/cmaps/`,
+            cMapUrl: `${PDFJS_BASE}cmaps/`,
             cMapPacked: true,
-            standardFontDataUrl: `${PDFJS_BASE}/standard_fonts/`,
-            wasmUrl: `${PDFJS_BASE}/wasm/`,
+            standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
+            wasmUrl: `${PDFJS_BASE}wasm/`,
         }).promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
@@ -129,16 +145,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function afficherPage(numero) {
         if (renduEnCours || numero < 1 || numero > nbPages) return;
         renduEnCours = true;
-
-        let page = await document_.getPage(numero);
-        let viewport = page.getViewport({ scale: echelle });
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        await page.render({ canvasContext: contexte, viewport }).promise;
-
         messageChargement.hidden = true;
-        canvas.hidden = false;
+
+        try {
+            let page = await document_.getPage(numero);
+            let viewport = page.getViewport({ scale: echelle });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({ canvasContext: contexte, viewport }).promise;
+
+            canvas.hidden = false;
+        } catch (erreur) {
+            // Une page corrompue ou mal encodée ne doit pas bloquer la lecture
+            // du reste du livre : on le signale et on laisse naviguer ailleurs.
+            console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
+            canvas.hidden = true;
+            messageChargement.textContent = `Cette page (${numero}) n'a pas pu être affichée. Essayez la suivante.`;
+            messageChargement.hidden = false;
+        }
+
         pageActuelle = numero;
         champPage.value = numero;
         renduEnCours = false;
