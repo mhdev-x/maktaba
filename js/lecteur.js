@@ -16,6 +16,89 @@ const PDFJS_BASE = (() => {
         : new URL("vendor/pdfjs/", window.location.href).href; // repli improbable
 })();
 
+// ==========================================================================
+// POLYFILLS — PDF.js 6.x utilise des méthodes JavaScript très récentes
+// (Baseline seulement depuis février 2026) que certains navigateurs, dont
+// Safari sur iPhone/iPad selon la version d'iOS, ne connaissent pas encore.
+// Sans ça, le rendu échoue avec "getOrInsertComputed is not a function"
+// (bug de compatibilité documenté sur le dépôt officiel de PDF.js, pas
+// spécifique à Maktaba). On fournit une implémentation de secours pour
+// que le lecteur fonctionne partout, y compris sur les navigateurs pas
+// encore à jour.
+// ==========================================================================
+(function () {
+    if (!Map.prototype.getOrInsertComputed) {
+        Map.prototype.getOrInsertComputed = function (cle, callback) {
+            if (this.has(cle)) return this.get(cle);
+            let valeur = callback(cle);
+            this.set(cle, valeur);
+            return valeur;
+        };
+    }
+    if (!Map.prototype.getOrInsert) {
+        Map.prototype.getOrInsert = function (cle, valeurParDefaut) {
+            if (this.has(cle)) return this.get(cle);
+            this.set(cle, valeurParDefaut);
+            return valeurParDefaut;
+        };
+    }
+    if (typeof WeakMap !== "undefined") {
+        if (!WeakMap.prototype.getOrInsertComputed) {
+            WeakMap.prototype.getOrInsertComputed = function (cle, callback) {
+                if (this.has(cle)) return this.get(cle);
+                let valeur = callback(cle);
+                this.set(cle, valeur);
+                return valeur;
+            };
+        }
+        if (!WeakMap.prototype.getOrInsert) {
+            WeakMap.prototype.getOrInsert = function (cle, valeurParDefaut) {
+                if (this.has(cle)) return this.get(cle);
+                this.set(cle, valeurParDefaut);
+                return valeurParDefaut;
+            };
+        }
+    }
+    if (!Promise.try) {
+        Promise.try = function (fonction, ...args) {
+            return new Promise((resolve, reject) => {
+                try {
+                    resolve(fonction(...args));
+                } catch (erreur) {
+                    reject(erreur);
+                }
+            });
+        };
+    }
+    if (!Promise.withResolvers) {
+        Promise.withResolvers = function () {
+            let resolve, reject;
+            let promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+            return { promise, resolve, reject };
+        };
+    }
+    if (!Uint8Array.prototype.toHex) {
+        Uint8Array.prototype.toHex = function () {
+            return Array.from(this).map(o => o.toString(16).padStart(2, "0")).join("");
+        };
+    }
+    if (!Uint8Array.fromHex) {
+        Uint8Array.fromHex = function (hex) {
+            let octets = hex.match(/.{1,2}/g) || [];
+            return new Uint8Array(octets.map(o => parseInt(o, 16)));
+        };
+    }
+    if (!URL.parse) {
+        URL.parse = function (url, base) {
+            try {
+                return new URL(url, base);
+            } catch {
+                return null;
+            }
+        };
+    }
+})();
+
 document.addEventListener("DOMContentLoaded", async () => {
     let parametres = new URLSearchParams(window.location.search);
     let slug = parametres.get("slug");
