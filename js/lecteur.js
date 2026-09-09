@@ -1,24 +1,19 @@
 // ==========================================================================
 // MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
+// PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
+// externe : structure garantie stable (lib, worker, cmaps, polices et wasm
+// viennent tous du même paquet officiel vérifié), aucune dépendance à un
+// tiers pour une fonctionnalité centrale du site. Chargé en import()
+// dynamique, car PDF.js n'est distribué qu'en module ES.
 // ==========================================================================
 
-// POLYFILL MOBILE : Correctif pour Safari / WebKit mobile
-if (typeof Map.prototype.getOrInsertComputed !== "function") {
-    Map.prototype.getOrInsertComputed = function(key, computeFn) {
-        if (this.has(key)) {
-            return this.get(key);
-        }
-        const value = computeFn(key);
-        this.set(key, value);
-        return value;
-    };
-}
-
+// Résolu à partir de l'URL réelle de CE script, donc correct quelle que soit
+// la page qui l'inclut (racine ou pages/).
 const PDFJS_BASE = (() => {
     let urlScript = document.currentScript ? document.currentScript.src : null;
     return urlScript
         ? new URL("vendor/pdfjs/", urlScript).href
-        : new URL("vendor/pdfjs/", window.location.href).href;
+        : new URL("vendor/pdfjs/", window.location.href).href; // repli improbable
 })();
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -41,13 +36,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     let listeSommaire = document.getElementById("liste-sommaire");
     let boutonBasculerSommaire = document.getElementById("bouton-basculer-sommaire");
     let sommaireLecteur = document.getElementById("sommaire-lecteur");
-    let lienSecoursNatif = document.getElementById("lien-pdf-natif");
 
     function afficherMessage(texte) {
         if (chargementLecteur) chargementLecteur.classList.add("etat-erreur");
-        if (messageChargement) messageChargement.textContent = texte;
-        if (messageChargement) messageChargement.hidden = false;
-        if (canvas) canvas.hidden = true;
+        messageChargement.textContent = texte;
+        messageChargement.hidden = false;
+        canvas.hidden = true;
     }
 
     if (!slug) {
@@ -75,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    // --- Session (nécessaire pour un fichier protégé, et pour la progression) ---
     let session = null;
     try {
         const { data } = await supabaseClient.auth.getSession();
@@ -85,11 +80,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let utilisateurId = session ? session.user.id : null;
 
     if (!fichierPdf.est_public && !utilisateurId) {
-        if (messageChargement) {
-            messageChargement.innerHTML =
-                `Vous devez être connecté pour lire cet ouvrage. <a href="connexion.html">Se connecter</a>`;
-            messageChargement.hidden = false;
-        }
+        messageChargement.innerHTML =
+            `Vous devez être connecté pour lire cet ouvrage. <a href="connexion.html">Se connecter</a>`;
+        messageChargement.hidden = false;
         return;
     }
 
@@ -99,72 +92,57 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // Configurer le lien de secours pour mobile
-    if (lienSecoursNatif) {
-        lienSecoursNatif.href = urlFichier;
-    }
-
-    const estMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
+    // --- Chargement de PDF.js (fichiers locaux, js/vendor/pdfjs/) ---
     let pdfjsLib;
     try {
         pdfjsLib = await import(`${PDFJS_BASE}pdf.mjs`);
         pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.mjs`;
-
-        // Désactiver les warnings de polices Safari
-        const warnOriginal = console.warn;
-        console.warn = function(...args) {
-            const message = args[0]?.toString() || '';
-            if (message.includes('Cannot load system font') || message.includes('Font extra bytes') || message.includes('cmap')) {
-                return;
-            }
-            warnOriginal.apply(console, args);
-        };
     } catch (erreur) {
         console.error("Maktaba : erreur de chargement de PDF.js.", erreur);
-        afficherMessage("Le lecteur n'a pas pu se charger. Vérifiez votre connexion.");
+        afficherMessage(`Le lecteur n'a pas pu se charger${erreur?.message ? ` (${erreur.message})` : ""}.`);
         return;
     }
 
     let document_;
     try {
-        if (messageChargement) messageChargement.textContent = "Téléchargement du document...";
-
-        // Récupération directe sous forme de buffer pour contourner les erreurs d'encodage Safari
-        let reponse = await fetch(urlFichier);
-        if (!reponse.ok) throw new Error("Échec du téléchargement.");
-        let dataBuffer = await reponse.arrayBuffer();
-
-        // Encodage strict et contournement du sanitizer de fontes Safari Mobile
-        let optionsChargement = {
-            data: dataBuffer,
-            cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+        let tacheChargement = pdfjsLib.getDocument({
+            url: urlFichier,
+            cMapUrl: `${PDFJS_BASE}cmaps/`,
             cMapPacked: true,
-            standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/",
-            // FIX SAFARI MOBILE : 
-            // Forcer disableFontFace à TRUE sur mobile empêche Safari de rejeter la police du PDF 
-            // et force PDF.js à dessiner les lettres sous forme de formes géométriques (vectorielles).
-            disableFontFace: estMobile ? true : false,
-            useSystemFonts: false,
-            isEvalSupported: false
+            standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
+            wasmUrl: `${PDFJS_BASE}wasm/`,
+        });
+
+        // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
+        // face à un texte figé pendant potentiellement plusieurs secondes.
+        tacheChargement.onProgress = ({ loaded, total }) => {
+            if (total) {
+                let pourcentage = Math.round((loaded / total) * 100);
+                messageChargement.textContent = `Chargement du document... ${pourcentage}%`;
+                if (barreChargement) barreChargement.style.width = `${pourcentage}%`;
+            } else {
+                let mo = (loaded / 1024 / 1024).toFixed(1);
+                messageChargement.textContent = `Chargement du document... (${mo} Mo)`;
+                if (barreChargement) barreChargement.style.width = "60%"; // taille inconnue : on avance quand même visuellement
+            }
         };
 
-        let tacheChargement = pdfjsLib.getDocument(optionsChargement);
         document_ = await tacheChargement.promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
-        afficherMessage("Ce fichier présente un format ou un encodage non supporté directement.");
+        afficherMessage(`Ce fichier n'a pas pu être ouvert${erreur?.message ? ` (${erreur.message})` : ""}.`);
         return;
     }
 
     let nbPages = document_.numPages;
     let pageActuelle = 1;
-    let echelle = 1.0;
-    let echelleBase = 1.0;
+    let echelle = 1.2;
+    let echelleBase = 1.2; // recalculée automatiquement au premier rendu (voir plus bas)
     let echelleInitialisee = false;
     const ECHELLE_MIN = 0.5;
-    const ECHELLE_MAX = 3.0;
+    const ECHELLE_MAX = 3;
 
+    // --- Reprise de la progression de lecture ---
     if (utilisateurId) {
         let progression = await chargerProgression(livre.id, utilisateurId);
         if (progression && progression.page_actuelle > 0 && progression.page_actuelle <= nbPages) {
@@ -172,30 +150,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    if (nombreTotalPages) nombreTotalPages.textContent = nbPages;
-    if (champPage) champPage.max = nbPages;
+    nombreTotalPages.textContent = nbPages;
+    champPage.max = nbPages;
 
-    let contexte = canvas.getContext("2d", { willReadFrequently: false });
-    let tacheRenduEnCours = null;
+    let contexte = canvas.getContext("2d");
+    let renduEnCours = false;
 
     async function afficherPage(numero) {
-        if (numero < 1 || numero > nbPages) return;
-
-        if (tacheRenduEnCours) {
-            try {
-                tacheRenduEnCours.cancel();
-            } catch (e) {}
-            tacheRenduEnCours = null;
-        }
+        if (renduEnCours || numero < 1 || numero > nbPages) return;
+        renduEnCours = true;
 
         try {
             let page = await document_.getPage(numero);
 
-            let zoneCanvas = document.getElementById("zone-canvas");
-            let largeurDisponible = zoneCanvas ? zoneCanvas.clientWidth - 20 : window.innerWidth - 20;
-
+            // Au tout premier rendu, on ajuste l'échelle à la largeur réellement
+            // disponible plutôt que d'utiliser une valeur fixe : une page scannée
+            // en haute résolution se rend beaucoup plus vite à une échelle adaptée
+            // qu'agrandie inutilement au-delà de ce qui sera affiché à l'écran.
             if (!echelleInitialisee) {
-                let viewportBrut = page.getViewport({ scale: 1.0 });
+                let viewportBrut = page.getViewport({ scale: 1 });
+                let largeurDisponible = document.getElementById("zone-canvas").clientWidth - 64;
                 if (largeurDisponible > 0) {
                     echelle = Math.min(ECHELLE_MAX, Math.max(ECHELLE_MIN, largeurDisponible / viewportBrut.width));
                     echelleBase = echelle;
@@ -203,96 +177,89 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            // Ratio de résolution ajusté pour éviter la saturation mémoire WebKit sur mobile
-            let pixelRatio = estMobile ? 1.5 : (window.devicePixelRatio || 1.0);
-            let viewport = page.getViewport({ scale: echelle * pixelRatio });
+            let viewport = page.getViewport({ scale: echelle });
 
-            canvas.width = Math.floor(viewport.width);
-            canvas.height = Math.floor(viewport.height);
+            // Sécurité : Safari sur iPhone/iPad limite la taille d'un <canvas>
+            // à environ 16 millions de pixels (contre bien plus sur ordinateur).
+            // Au-delà, le rendu échoue silencieusement. On réduit l'échelle
+            // automatiquement si la page (souvent un scan haute résolution)
+            // dépasserait cette limite.
+            const PIXELS_MAX_CANVAS = 16000000;
+            if (viewport.width * viewport.height > PIXELS_MAX_CANVAS) {
+                let facteurReduction = Math.sqrt(PIXELS_MAX_CANVAS / (viewport.width * viewport.height));
+                echelle = +(echelle * facteurReduction).toFixed(2);
+                viewport = page.getViewport({ scale: echelle });
+            }
 
-            canvas.style.width = `${Math.floor(viewport.width / pixelRatio)}px`;
-            canvas.style.height = `${Math.floor(viewport.height / pixelRatio)}px`;
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
 
-            let optionsRendu = {
-                canvasContext: contexte,
-                viewport: viewport
-            };
+            await page.render({ canvasContext: contexte, viewport }).promise;
 
-            tacheRenduEnCours = page.render(optionsRendu);
-            await tacheRenduEnCours.promise;
-            tacheRenduEnCours = null;
-
-            if (chargementLecteur) chargementLecteur.hidden = true;
-            if (canvas) canvas.hidden = false;
+            chargementLecteur.hidden = true;
+            canvas.hidden = false;
         } catch (erreur) {
-            if (erreur?.name === 'RenderingCancelledException') {
-                return;
-            }
-
+            // Une page corrompue ou mal encodée ne doit pas bloquer la lecture
+            // du reste du livre : on le signale et on laisse naviguer ailleurs.
             console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
-            if (canvas) canvas.hidden = true;
-            if (chargementLecteur) {
-                chargementLecteur.classList.add("etat-erreur");
-                chargementLecteur.hidden = false;
-            }
-            if (messageChargement) {
-                messageChargement.textContent = `Cette page (${numero}) présente un problème d'affichage sur ce navigateur.`;
-            }
+            canvas.hidden = true;
+            chargementLecteur.classList.add("etat-erreur");
+            chargementLecteur.hidden = false;
+            let detail = erreur && erreur.message ? ` (${erreur.message})` : "";
+            messageChargement.textContent = `Cette page (${numero}) n'a pas pu être affichée${detail}.`;
         }
 
         pageActuelle = numero;
-        if (champPage) champPage.value = numero;
+        champPage.value = numero;
+        renduEnCours = false;
 
         if (utilisateurId) {
             enregistrerProgression(livre.id, utilisateurId, numero, nbPages);
         }
     }
 
-    if (boutonPrecedent) boutonPrecedent.addEventListener("click", () => afficherPage(pageActuelle - 1));
-    if (boutonSuivant) boutonSuivant.addEventListener("click", () => afficherPage(pageActuelle + 1));
-    if (champPage) {
-        champPage.addEventListener("change", () => {
-            let cible = parseInt(champPage.value, 10);
-            if (cible >= 1 && cible <= nbPages) {
-                afficherPage(cible);
-            } else {
-                champPage.value = pageActuelle;
-            }
-        });
-    }
+    boutonPrecedent.addEventListener("click", () => afficherPage(pageActuelle - 1));
+    boutonSuivant.addEventListener("click", () => afficherPage(pageActuelle + 1));
+    champPage.addEventListener("change", () => {
+        let cible = parseInt(champPage.value, 10);
+        if (cible >= 1 && cible <= nbPages) {
+            afficherPage(cible);
+        } else {
+            champPage.value = pageActuelle;
+        }
+    });
 
     function mettreAJourZoom() {
-        if (pourcentageZoom) pourcentageZoom.textContent = `${Math.round((echelle / echelleBase) * 100)}%`;
+        pourcentageZoom.textContent = `${Math.round((echelle / echelleBase) * 100)}%`;
         afficherPage(pageActuelle);
     }
-    if (boutonZoomMoins) {
-        boutonZoomMoins.addEventListener("click", () => {
-            echelle = Math.max(ECHELLE_MIN, +(echelle - 0.2).toFixed(2));
-            mettreAJourZoom();
-        });
-    }
-    if (boutonZoomPlus) {
-        boutonZoomPlus.addEventListener("click", () => {
-            echelle = Math.min(ECHELLE_MAX, +(echelle + 0.2).toFixed(2));
-            mettreAJourZoom();
-        });
-    }
+    boutonZoomMoins.addEventListener("click", () => {
+        echelle = Math.max(ECHELLE_MIN, +(echelle - 0.2).toFixed(2));
+        mettreAJourZoom();
+    });
+    boutonZoomPlus.addEventListener("click", () => {
+        echelle = Math.min(ECHELLE_MAX, +(echelle + 0.2).toFixed(2));
+        mettreAJourZoom();
+    });
 
+    // Navigation au clavier (flèches gauche/droite)
     document.addEventListener("keydown", (e) => {
         if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
         if (e.key === "ArrowRight") afficherPage(pageActuelle + 1);
         if (e.key === "ArrowLeft") afficherPage(pageActuelle - 1);
     });
 
+    // Sommaire mobile (masqué par défaut sur petit écran via CSS)
     if (boutonBasculerSommaire && sommaireLecteur) {
         boutonBasculerSommaire.addEventListener("click", () => {
             sommaireLecteur.classList.toggle("sommaire-ouvert");
         });
     }
 
+    // --- Sommaire (si le PDF en contient un) ---
     try {
         let plan = await document_.getOutline();
-        if (plan && plan.length && listeSommaire) {
+        if (plan && plan.length) {
             listeSommaire.innerHTML = "";
             for (let item of plan) {
                 let bouton = document.createElement("button");
