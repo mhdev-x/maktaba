@@ -2624,6 +2624,61 @@ body.theme-clair .badge-collection-meta {
 }
 
 /* =========================================
+   TRANSITION "PAGE QUI SE TOURNE" ENTRE LES PAGES
+   ========================================= */
+#transition-livre {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: linear-gradient(120deg, var(--couleur-surface) 0%, var(--couleur-fond) 100%);
+    transform-origin: left center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+body.transition-sortie #transition-livre {
+    animation: maktaba-tourner-page-sortie 0.45s ease-in forwards;
+}
+
+body.transition-entree #transition-livre {
+    animation: maktaba-tourner-page-entree 0.45s ease-out forwards;
+}
+
+@keyframes maktaba-tourner-page-sortie {
+    0% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg);
+        box-shadow: -20px 0 40px rgba(0, 0, 0, 0.35);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(-100deg);
+        box-shadow: -60px 0 60px rgba(0, 0, 0, 0.55);
+    }
+}
+
+@keyframes maktaba-tourner-page-entree {
+    0% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(100deg);
+        box-shadow: 60px 0 60px rgba(0, 0, 0, 0.55);
+    }
+    100% {
+        opacity: 0;
+        transform: perspective(1600px) rotateY(0deg);
+        box-shadow: none;
+    }
+}
+
+/* Les visiteurs qui préfèrent moins d'animations n'ont pas cet effet */
+@media (prefers-reduced-motion: reduce) {
+    body.transition-sortie #transition-livre,
+    body.transition-entree #transition-livre {
+        animation: none;
+    }
+}
+
+/* =========================================
    LECTEUR PDF INTÉGRÉ
    ========================================= */
 body.page-lecteur {
