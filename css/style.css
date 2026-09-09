@@ -29,6 +29,14 @@
     box-sizing: border-box;
 }
 
+/* L'attribut HTML "hidden" doit toujours l'emporter, même sur un élément
+   dont une classe définit son propre "display" (ex: display: flex).
+   Sans cette règle, un élément masqué via JS (element.hidden = true)
+   peut rester visible si une autre règle CSS lui impose un display. */
+[hidden] {
+    display: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }
