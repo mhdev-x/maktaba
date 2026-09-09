@@ -116,18 +116,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let document_;
     try {
+        // CORRECTION MOBILE 1: Désactivation de la stratégie par plage d'octets / stream
+        // qui fait échouer les requêtes réseau sur Safari/Chrome mobile avec Supabase.
         let tacheChargement = pdfjsLib.getDocument({
             url: urlFichier,
             cMapUrl: `${PDFJS_BASE}cmaps/`,
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
-            useSystemFonts: false,      // Force l'utilisation des polices standard de PDF.js
-            disableFontFace: false,     // Conserve la qualité de rendu vectoriel
+            useSystemFonts: false,
+            disableFontFace: false,
+            disableAutoFetch: true,
+            disableStream: true,
+            disableRange: true
         });
 
-        // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
-        // face à un texte figé pendant potentiellement plusieurs secondes.
+        // Progression réelle du téléchargement
         tacheChargement.onProgress = ({ loaded, total }) => {
             if (total) {
                 let pourcentage = Math.round((loaded / total) * 100);
@@ -136,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
                 let mo = (loaded / 1024 / 1024).toFixed(1);
                 messageChargement.textContent = `Chargement du document... (${mo} Mo)`;
-                if (barreChargement) barreChargement.style.width = "60%"; // taille inconnue : on avance quand même visuellement
+                if (barreChargement) barreChargement.style.width = "60%";
             }
         };
 
@@ -150,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let nbPages = document_.numPages;
     let pageActuelle = 1;
     let echelle = 1.2;
-    let echelleBase = 1.2; // recalculée automatiquement au premier rendu (voir plus bas)
+    let echelleBase = 1.2;
     let echelleInitialisee = false;
     const ECHELLE_MIN = 0.5;
     const ECHELLE_MAX = 3;
@@ -176,13 +180,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             let page = await document_.getPage(numero);
 
-            // Au tout premier rendu, on ajuste l'échelle à la largeur réellement
-            // disponible plutôt que d'utiliser une valeur fixe : une page scannée
-            // en haute résolution se rend beaucoup plus vite à une échelle adaptée
-            // qu'agrandie inutilement au-delà de ce qui sera affiché à l'écran.
+            let zoneCanvas = document.getElementById("zone-canvas");
+            let largeurDisponible = zoneCanvas ? zoneCanvas.clientWidth - 32 : window.innerWidth - 32;
+
             if (!echelleInitialisee) {
                 let viewportBrut = page.getViewport({ scale: 1 });
-                let largeurDisponible = document.getElementById("zone-canvas").clientWidth - 64;
                 if (largeurDisponible > 0) {
                     echelle = Math.min(ECHELLE_MAX, Math.max(ECHELLE_MIN, largeurDisponible / viewportBrut.width));
                     echelleBase = echelle;
@@ -190,21 +192,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            // 1. Récupérer le ratio de densité de l'écran (ex: 2 pour Retina/Smartphone, 1.25, etc.)
-            let pixelRatio = window.devicePixelRatio || 1;
+            // CORRECTION MOBILE 2: Plafonner le pixelRatio à 1.5 sur mobile.
+            // Sur smartphone (ex: Retina pixelRatio = 3), la surface du Canvas dépassait
+            // la mémoire tampon maximale autorisée par le navigateur mobile.
+            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            let rawPixelRatio = window.devicePixelRatio || 1;
+            let pixelRatio = isMobile ? Math.min(rawPixelRatio, 1.5) : rawPixelRatio;
 
-            // 2. Calculer le viewport en tenant compte du ratio d'écran
+            // Calcul du viewport avec le ratio ajusté
             let viewport = page.getViewport({ scale: echelle * pixelRatio });
 
-            // 3. Ajuster la résolution interne du canvas (haute définition)
+            // Redimensionnement du Canvas
             canvas.width = Math.floor(viewport.width);
             canvas.height = Math.floor(viewport.height);
 
-            // 4. Forcer la taille d'affichage CSS pour ne pas que le canvas soit géant à l'écran
+            // Redimensionnement CSS pour adapter l'affichage à l'écran
             canvas.style.width = `${Math.floor(viewport.width / pixelRatio)}px`;
             canvas.style.height = `${Math.floor(viewport.height / pixelRatio)}px`;
 
-            // 5. Lancer le rendu
+            // Rendu de la page
             await page.render({ 
                 canvasContext: contexte, 
                 viewport: viewport 
@@ -213,8 +219,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             chargementLecteur.hidden = true;
             canvas.hidden = false;
         } catch (erreur) {
-            // Une page corrompue ou mal encodée ne doit pas bloquer la lecture
-            // du reste du livre : on le signale et on laisse naviguer ailleurs.
             console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
             canvas.hidden = true;
             chargementLecteur.classList.add("etat-erreur");
@@ -262,7 +266,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.key === "ArrowLeft") afficherPage(pageActuelle - 1);
     });
 
-    // Sommaire mobile (masqué par défaut sur petit écran via CSS)
+    // Sommaire mobile
     if (boutonBasculerSommaire && sommaireLecteur) {
         boutonBasculerSommaire.addEventListener("click", () => {
             sommaireLecteur.classList.toggle("sommaire-ouvert");
