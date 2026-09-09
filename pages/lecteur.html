@@ -58,6 +58,19 @@
                 <button id="bouton-basculer-sommaire" type="button" class="bouton-basculer-sommaire-mobile" aria-label="Afficher/masquer le sommaire">
                     <i class="fa-solid fa-list"></i>
                 </button>
+                <button id="bouton-journal-technique" type="button" aria-label="Afficher le journal technique">
+                    <i class="fa-solid fa-bug"></i>
+                </button>
+            </div>
+
+            <div class="panneau-journal-technique" id="panneau-journal-technique" hidden>
+                <div class="entete-journal-technique">
+                    <strong>Journal technique</strong>
+                    <button type="button" id="bouton-fermer-journal" aria-label="Fermer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="contenu-journal-technique"></div>
             </div>
 
             <div class="zone-canvas" id="zone-canvas">
@@ -72,12 +85,6 @@
                     </div>
                 </div>
                 <canvas id="canvas-pdf" hidden></canvas>
-            </div>
-
-            <div class="option-secours-mobile" style="text-align: center; padding: 10px;">
-                <a id="lien-pdf-natif" target="_blank" rel="noopener" style="font-size: 0.85rem; color: var(--couleur-texte-secondaire, #666); text-decoration: underline;">
-                    Problème d'affichage ? Ouvrir directement le document PDF
-                </a>
             </div>
         </main>
 

@@ -99,6 +99,26 @@ const PDFJS_BASE = (() => {
     }
 })();
 
+// ==========================================================================
+// JOURNAL TECHNIQUE — capture les avertissements/erreurs de la console pour
+// pouvoir les consulter directement sur la page (utile sur mobile, où les
+// outils de développement ne sont pas accessibles facilement).
+// ==========================================================================
+let journalTechnique = [];
+(function () {
+    let avertissementOriginal = console.warn.bind(console);
+    let erreurOriginale = console.error.bind(console);
+
+    console.warn = function (...args) {
+        journalTechnique.push({ type: "warn", texte: args.map(String).join(" ") });
+        avertissementOriginal(...args);
+    };
+    console.error = function (...args) {
+        journalTechnique.push({ type: "error", texte: args.map(String).join(" ") });
+        erreurOriginale(...args);
+    };
+})();
+
 document.addEventListener("DOMContentLoaded", async () => {
     let parametres = new URLSearchParams(window.location.search);
     let slug = parametres.get("slug");
@@ -194,12 +214,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
-            // Désactivé : évite qu'une police système portant le même nom que
-            // celle du PDF (souvent une police arabe propriétaire non incorporée)
-            // soit utilisée sur une plateforme mais pas une autre, donnant un
-            // rendu incohérent selon l'appareil (ex: correct sur ordinateur,
-            // "hiéroglyphes" sur iPhone qui n'a pas cette police).
-            useSystemFonts: false,
         });
 
         // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
@@ -342,6 +356,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (boutonBasculerSommaire && sommaireLecteur) {
         boutonBasculerSommaire.addEventListener("click", () => {
             sommaireLecteur.classList.toggle("sommaire-ouvert");
+        });
+    }
+
+    // --- Journal technique (consultable sans outils de développement) ---
+    let boutonJournal = document.getElementById("bouton-journal-technique");
+    let boutonFermerJournal = document.getElementById("bouton-fermer-journal");
+    let panneauJournal = document.getElementById("panneau-journal-technique");
+    let contenuJournal = document.getElementById("contenu-journal-technique");
+
+    function rafraichirJournal() {
+        contenuJournal.innerHTML = journalTechnique.length
+            ? journalTechnique.map(entree =>
+                `<p class="ligne-journal ligne-journal-${entree.type}">${entree.texte.replace(/</g, "&lt;")}</p>`
+              ).join("")
+            : `<p class="ligne-journal">Aucun avertissement pour le moment.</p>`;
+        contenuJournal.scrollTop = contenuJournal.scrollHeight;
+    }
+
+    if (boutonJournal && panneauJournal) {
+        boutonJournal.addEventListener("click", () => {
+            rafraichirJournal();
+            panneauJournal.hidden = false;
+        });
+    }
+    if (boutonFermerJournal && panneauJournal) {
+        boutonFermerJournal.addEventListener("click", () => {
+            panneauJournal.hidden = true;
         });
     }
 
