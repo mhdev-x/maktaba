@@ -2,7 +2,7 @@
 // MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
 // ==========================================================================
 
-// POLYFILL MOBILE : Correctif pour Safari / WebKit mobile manquant Map.prototype.getOrInsertComputed
+// POLYFILL MOBILE : Correctif pour Safari / WebKit mobile
 if (typeof Map.prototype.getOrInsertComputed !== "function") {
     Map.prototype.getOrInsertComputed = function(key, computeFn) {
         if (this.has(key)) {
@@ -41,12 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let listeSommaire = document.getElementById("liste-sommaire");
     let boutonBasculerSommaire = document.getElementById("bouton-basculer-sommaire");
     let sommaireLecteur = document.getElementById("sommaire-lecteur");
+    let lienSecoursNatif = document.getElementById("lien-pdf-natif");
 
     function afficherMessage(texte) {
         if (chargementLecteur) chargementLecteur.classList.add("etat-erreur");
-        messageChargement.textContent = texte;
-        messageChargement.hidden = false;
-        canvas.hidden = true;
+        if (messageChargement) messageChargement.textContent = texte;
+        if (messageChargement) messageChargement.hidden = false;
+        if (canvas) canvas.hidden = true;
     }
 
     if (!slug) {
@@ -84,9 +85,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     let utilisateurId = session ? session.user.id : null;
 
     if (!fichierPdf.est_public && !utilisateurId) {
-        messageChargement.innerHTML =
-            `Vous devez être connecté pour lire cet ouvrage. <a href="connexion.html">Se connecter</a>`;
-        messageChargement.hidden = false;
+        if (messageChargement) {
+            messageChargement.innerHTML =
+                `Vous devez être connecté pour lire cet ouvrage. <a href="connexion.html">Se connecter</a>`;
+            messageChargement.hidden = false;
+        }
         return;
     }
 
@@ -96,6 +99,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    // Configurer le lien de secours pour mobile
+    if (lienSecoursNatif) {
+        lienSecoursNatif.href = urlFichier;
+    }
+
     const estMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     let pdfjsLib;
@@ -103,10 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         pdfjsLib = await import(`${PDFJS_BASE}pdf.mjs`);
         pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.mjs`;
 
+        // Désactiver les warnings de polices Safari
         const warnOriginal = console.warn;
         console.warn = function(...args) {
             const message = args[0]?.toString() || '';
-            if (message.includes('Cannot load system font') || message.includes('Font extra bytes')) {
+            if (message.includes('Cannot load system font') || message.includes('Font extra bytes') || message.includes('cmap')) {
                 return;
             }
             warnOriginal.apply(console, args);
@@ -119,37 +128,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let document_;
     try {
+        if (messageChargement) messageChargement.textContent = "Téléchargement du document...";
+
+        // Récupération directe sous forme de buffer pour contourner les erreurs d'encodage Safari
+        let reponse = await fetch(urlFichier);
+        if (!reponse.ok) throw new Error("Échec du téléchargement.");
+        let dataBuffer = await reponse.arrayBuffer();
+
+        // Encodage strict avec fallback CDN pour les cmaps si le serveur local bloque les MIME types binaires
         let optionsChargement = {
-            url: urlFichier,
-            cMapUrl: `${PDFJS_BASE}cmaps/`,
+            data: dataBuffer,
+            cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
             cMapPacked: true,
-            standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
-            wasmUrl: `${PDFJS_BASE}wasm/`,
-            useSystemFonts: true,          // Autorise les polices système de secours
-            disableFontFace: false,         // Nécessaire pour afficher les caractères arabes/spéciaux correctement
-            disableAutoFetch: true,
-            disableStream: true,
-            disableRange: true
+            standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/",
+            isEvalSupported: false,
+            useSystemFonts: true,
+            disableFontFace: false
         };
 
         let tacheChargement = pdfjsLib.getDocument(optionsChargement);
-
-        tacheChargement.onProgress = ({ loaded, total }) => {
-            if (total) {
-                let pourcentage = Math.round((loaded / total) * 100);
-                messageChargement.textContent = `Chargement du document... ${pourcentage}%`;
-                if (barreChargement) barreChargement.style.width = `${pourcentage}%`;
-            } else {
-                let mo = (loaded / 1024 / 1024).toFixed(1);
-                messageChargement.textContent = `Chargement du document... (${mo} Mo)`;
-                if (barreChargement) barreChargement.style.width = "60%";
-            }
-        };
-
         document_ = await tacheChargement.promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
-        afficherMessage("Ce fichier n'a pas pu être ouvert.");
+        afficherMessage("Ce fichier présente un format ou un encodage non supporté directement.");
         return;
     }
 
@@ -168,8 +169,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    nombreTotalPages.textContent = nbPages;
-    champPage.max = nbPages;
+    if (nombreTotalPages) nombreTotalPages.textContent = nbPages;
+    if (champPage) champPage.max = nbPages;
 
     let contexte = canvas.getContext("2d", { willReadFrequently: false });
     let tacheRenduEnCours = null;
@@ -199,7 +200,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            let pixelRatio = estMobile ? 1.0 : (window.devicePixelRatio || 1.0);
+            // Ratio de résolution ajusté pour éviter la saturation mémoire WebKit sur mobile
+            let pixelRatio = estMobile ? 1.5 : (window.devicePixelRatio || 1.0);
             let viewport = page.getViewport({ scale: echelle * pixelRatio });
 
             canvas.width = Math.floor(viewport.width);
@@ -217,51 +219,61 @@ document.addEventListener("DOMContentLoaded", async () => {
             await tacheRenduEnCours.promise;
             tacheRenduEnCours = null;
 
-            chargementLecteur.hidden = true;
-            canvas.hidden = false;
+            if (chargementLecteur) chargementLecteur.hidden = true;
+            if (canvas) canvas.hidden = false;
         } catch (erreur) {
             if (erreur?.name === 'RenderingCancelledException') {
                 return;
             }
 
             console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
-            canvas.hidden = true;
-            chargementLecteur.classList.add("etat-erreur");
-            chargementLecteur.hidden = false;
-            messageChargement.textContent = `Cette page (${numero}) n'a pas pu être affichée. Essayez la suivante.`;
+            if (canvas) canvas.hidden = true;
+            if (chargementLecteur) {
+                chargementLecteur.classList.add("etat-erreur");
+                chargementLecteur.hidden = false;
+            }
+            if (messageChargement) {
+                messageChargement.textContent = `Cette page (${numero}) présente un problème d'affichage sur ce navigateur.`;
+            }
         }
 
         pageActuelle = numero;
-        champPage.value = numero;
+        if (champPage) champPage.value = numero;
 
         if (utilisateurId) {
             enregistrerProgression(livre.id, utilisateurId, numero, nbPages);
         }
     }
 
-    boutonPrecedent.addEventListener("click", () => afficherPage(pageActuelle - 1));
-    boutonSuivant.addEventListener("click", () => afficherPage(pageActuelle + 1));
-    champPage.addEventListener("change", () => {
-        let cible = parseInt(champPage.value, 10);
-        if (cible >= 1 && cible <= nbPages) {
-            afficherPage(cible);
-        } else {
-            champPage.value = pageActuelle;
-        }
-    });
+    if (boutonPrecedent) boutonPrecedent.addEventListener("click", () => afficherPage(pageActuelle - 1));
+    if (boutonSuivant) boutonSuivant.addEventListener("click", () => afficherPage(pageActuelle + 1));
+    if (champPage) {
+        champPage.addEventListener("change", () => {
+            let cible = parseInt(champPage.value, 10);
+            if (cible >= 1 && cible <= nbPages) {
+                afficherPage(cible);
+            } else {
+                champPage.value = pageActuelle;
+            }
+        });
+    }
 
     function mettreAJourZoom() {
-        pourcentageZoom.textContent = `${Math.round((echelle / echelleBase) * 100)}%`;
+        if (pourcentageZoom) pourcentageZoom.textContent = `${Math.round((echelle / echelleBase) * 100)}%`;
         afficherPage(pageActuelle);
     }
-    boutonZoomMoins.addEventListener("click", () => {
-        echelle = Math.max(ECHELLE_MIN, +(echelle - 0.2).toFixed(2));
-        mettreAJourZoom();
-    });
-    boutonZoomPlus.addEventListener("click", () => {
-        echelle = Math.min(ECHELLE_MAX, +(echelle + 0.2).toFixed(2));
-        mettreAJourZoom();
-    });
+    if (boutonZoomMoins) {
+        boutonZoomMoins.addEventListener("click", () => {
+            echelle = Math.max(ECHELLE_MIN, +(echelle - 0.2).toFixed(2));
+            mettreAJourZoom();
+        });
+    }
+    if (boutonZoomPlus) {
+        boutonZoomPlus.addEventListener("click", () => {
+            echelle = Math.min(ECHELLE_MAX, +(echelle + 0.2).toFixed(2));
+            mettreAJourZoom();
+        });
+    }
 
     document.addEventListener("keydown", (e) => {
         if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
@@ -277,7 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         let plan = await document_.getOutline();
-        if (plan && plan.length) {
+        if (plan && plan.length && listeSommaire) {
             listeSommaire.innerHTML = "";
             for (let item of plan) {
                 let bouton = document.createElement("button");
