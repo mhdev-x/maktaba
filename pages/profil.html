@@ -97,6 +97,9 @@
                     <p><strong>Membre depuis :</strong> <span id="info-date">—</span></p>
 
                     <div class="actions-propos">
+                        <a href="moderation.html" class="bouton-principal" id="lien-moderation" hidden>
+                            <i class="fa-solid fa-shield-halved"></i> Espace modérateur
+                        </a>
                         <button type="button" class="bouton-secondaire" id="bouton-deconnexion-page">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Se déconnecter
                         </button>
@@ -227,6 +230,13 @@
             document.getElementById("info-nom").textContent = nomComplet;
             document.getElementById("info-email").textContent = utilisateur.email;
             document.getElementById("info-date").textContent = dateCreation;
+
+            // --- Lien vers la modération (visible seulement si le rôle le permet) ---
+            let profil = await chargerMonProfil(utilisateur.id);
+            let lienModeration = document.getElementById("lien-moderation");
+            if (lienModeration && profil && ["moderateur", "admin"].includes(profil.role)) {
+                lienModeration.hidden = false;
+            }
 
             document.getElementById("bouton-deconnexion-page").addEventListener("click", async () => {
                 try {

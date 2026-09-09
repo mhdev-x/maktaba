@@ -2547,6 +2547,75 @@ body.theme-clair .badge-collection-meta {
 }
 
 /* =========================================
+   MODÉRATION DES CONTRIBUTIONS
+   ========================================= */
+.filtres-moderation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.carte-moderation {
+    padding: 20px 22px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.description-contribution {
+    margin-top: 10px;
+    color: var(--couleur-texte);
+    font-size: 0.9rem;
+}
+
+.lien-contribution {
+    margin-top: 6px;
+    font-size: 0.85rem;
+}
+
+.lien-contribution a {
+    color: var(--couleur-accent);
+    word-break: break-all;
+}
+
+.zone-moderation {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(245, 241, 232, 0.08);
+}
+
+.champ-commentaire-moderation {
+    width: 100%;
+    min-height: 70px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+    margin-bottom: 12px;
+}
+
+.champ-commentaire-moderation:focus {
+    outline: none;
+    border-color: var(--couleur-accent);
+}
+
+.actions-moderation {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.actions-moderation button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* =========================================
    LECTEUR PDF INTÉGRÉ
    ========================================= */
 body.page-lecteur {

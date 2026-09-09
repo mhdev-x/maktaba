@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tableau de modération des contributions Maktaba — réservé aux modérateurs.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Modération — Maktaba</title>
+</head>
+<body>
+
+    <header class="en-tete">
+        <nav class="barre-navigation">
+            <a href="../index.html" class="logo">Maktaba</a>
+            <div class="liens-navigation">
+                <a href="../index.html" class="lien-navigation">Accueil</a>
+                <a href="livres.html" class="lien-navigation">Bibliothèque</a>
+                <a href="categories.html" class="lien-navigation">Collections</a>
+                <a href="auteurs.html" class="lien-navigation">Auteurs</a>
+                <a href="a-propos.html" class="lien-navigation">À propos</a>
+                <div class="actions-navigation-mobile">
+                    <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-moon"></i> <span>Basculer le thème</span>
+                    </button>
+                    <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
+                    </button>
+                    <div class="compte-mobile" id="compte-mobile">
+    <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </a>
+</div>
+                </div>
+            </div>
+            <div class="actions-navigation">
+                <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="bouton-recherche btn-ouvrir-recherche" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
+                </button>
+                <div class="menu-compte" id="menu-compte">
+    <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        <span>Connexion</span>
+    </button>
+    <div class="dropdown-compte" id="dropdown-compte" hidden>
+        <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
+            <i class="fa-solid fa-circle-user"></i> Mon profil
+        </a>
+        <button class="dropdown-item dropdown-deconnexion" type="button" id="bouton-deconnexion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+        </button>
+    </div>
+</div>
+            </div>
+            <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main id="contenu-principal">
+
+        <section class="section-en-tete-page">
+            <div class="conteneur-en-tete-page">
+                <span class="surtitre-section">Espace modérateur</span>
+                <h1 class="titre-page">Modération des contributions</h1>
+                <p class="description-page">
+                    Examine les ouvrages proposés par la communauté, approuve ou rejette-les avec un commentaire.
+                </p>
+            </div>
+        </section>
+
+        <section class="section-a-propos">
+            <div class="conteneur-a-propos">
+
+                <!-- État : accès refusé -->
+                <article class="bloc-texte-propos" id="bloc-acces-refuse" hidden>
+                    <div class="icone-propos"><i class="fa-solid fa-lock"></i></div>
+                    <h2>Accès réservé</h2>
+                    <p>Cette page est réservée aux modérateurs et administrateurs de Maktaba.</p>
+                    <div class="actions-propos">
+                        <a href="../index.html" class="bouton-principal">Retour à l'accueil</a>
+                    </div>
+                </article>
+
+                <!-- État : tableau de modération -->
+                <article class="bloc-texte-propos" id="bloc-moderation" hidden>
+                    <div class="filtres-moderation" id="filtres-moderation">
+                        <button class="bouton-filtre actif" data-filtre="en_attente" type="button">En attente</button>
+                        <button class="bouton-filtre" data-filtre="approuvee" type="button">Approuvées</button>
+                        <button class="bouton-filtre" data-filtre="rejetee" type="button">Rejetées</button>
+                        <button class="bouton-filtre" data-filtre="toutes" type="button">Toutes</button>
+                    </div>
+
+                    <div id="liste-moderation">
+                        <p class="message-vide-inline">Chargement...</p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="pied-page">
+        <div class="conteneur-pied-page">
+            <div class="grille-pied-page">
+                <div class="colonne-pied-page">
+                    <a href="../index.html" class="logo-pied-page">Maktaba <span>مكتبة</span></a>
+                    <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
+                    <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
+                </div>
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Navigation</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="livres.html">Bibliothèque</a></li>
+                        <li><a href="categories.html">Collections</a></li>
+                        <li><a href="auteurs.html">Auteurs</a></li>
+                        <li><a href="a-propos.html">À propos</a></li>
+                    </ul>
+                </div>
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Collections</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="livres.html?categorie=aqida">العقيدة — Aqida</a></li>
+                        <li><a href="livres.html?categorie=hadith">الحديث — Hadith</a></li>
+                        <li><a href="livres.html?categorie=tafsir">التفسير — Tafsir</a></li>
+                        <li><a href="livres.html?categorie=fiqh">الفقه — Fiqh</a></li>
+                        <li><a href="livres.html?categorie=sira">السيرة — Sira</a></li>
+                    </ul>
+                </div>
+                <div class="colonne-pied-page">
+                    <h4 class="titre-colonne-pied-page">Communauté</h4>
+                    <ul class="liens-pied-page">
+                        <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="proposer.html">Proposer un ouvrage</a></li>
+                        <li><a href="#">Droits d'auteur</a></li>
+                        <li><a href="#">Contribuer au code</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bas-pied-page">
+                <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
+                <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/moderation.js"></script>
+</body>
+</html>

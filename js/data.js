@@ -329,6 +329,108 @@ function maktabaCarteContributionHTML(contribution) {
 }
 
 // ==========================================
+// MODÉRATION DES CONTRIBUTIONS (réservé aux rôles moderateur/admin — RLS)
+// ==========================================
+
+// Renvoie le profil (dont le rôle) de l'utilisateur connecté.
+async function chargerMonProfil(utilisateurId) {
+    if (!supabaseClient || !utilisateurId) return null;
+
+    const { data, error } = await supabaseClient
+        .from("profils")
+        .select("nom_complet, role")
+        .eq("id", utilisateurId)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Maktaba : erreur de chargement du profil.", error);
+        return null;
+    }
+    return data;
+}
+
+// Charge toutes les contributions (visible uniquement aux modérateurs/admins
+// via RLS), avec le nom de leur auteur, optionnellement filtrées par statut.
+async function chargerToutesLesContributions(statutFiltre) {
+    if (!supabaseClient) return [];
+
+    let requete = supabaseClient
+        .from("contributions")
+        .select(`
+            id, titre_propose, auteur_propose, categorie_proposee, description,
+            lien_source, statut, commentaire_moderateur, created_at,
+            profils!contributions_utilisateur_id_fkey(nom_complet)
+        `)
+        .order("created_at", { ascending: false });
+
+    if (statutFiltre && statutFiltre !== "toutes") {
+        requete = requete.eq("statut", statutFiltre);
+    }
+
+    const { data, error } = await requete;
+    if (error) {
+        console.error("Maktaba : erreur de chargement des contributions.", error);
+        return [];
+    }
+    return data || [];
+}
+
+// Applique une décision de modération (RLS réserve cette action aux modérateurs/admins).
+async function traiterContribution(contributionId, statut, commentaire, moderateurId) {
+    if (!supabaseClient) return false;
+
+    const { error } = await supabaseClient
+        .from("contributions")
+        .update({
+            statut,
+            commentaire_moderateur: commentaire || null,
+            traite_par: moderateurId,
+            traite_le: new Date().toISOString(),
+        })
+        .eq("id", contributionId);
+
+    if (error) {
+        console.error("Maktaba : erreur lors du traitement de la contribution.", error);
+        return false;
+    }
+    return true;
+}
+
+function maktabaCarteModerationHTML(contribution) {
+    let date = new Date(contribution.created_at).toLocaleDateString("fr-FR", {
+        year: "numeric", month: "long", day: "numeric",
+    });
+    let proposePar = contribution.profils?.nom_complet || "Utilisateur";
+    let dejaTraitee = contribution.statut !== "en_attente";
+
+    return `
+        <div class="carte-moderation statut-${contribution.statut}" data-id="${contribution.id}">
+            <div class="entete-contribution">
+                <h4>${contribution.titre_propose}</h4>
+                <span class="badge-statut-contribution">${maktabaLabelStatutContribution(contribution.statut)}</span>
+            </div>
+            ${contribution.auteur_propose ? `<p class="auteur-contribution">Auteur proposé : ${contribution.auteur_propose}</p>` : ""}
+            ${contribution.categorie_proposee ? `<p class="auteur-contribution">Catégorie proposée : ${contribution.categorie_proposee}</p>` : ""}
+            ${contribution.description ? `<p class="description-contribution">${contribution.description}</p>` : ""}
+            ${contribution.lien_source ? `<p class="lien-contribution"><a href="${contribution.lien_source}" target="_blank" rel="noopener">${contribution.lien_source}</a></p>` : ""}
+            <p class="date-contribution">Proposé par ${proposePar}, le ${date}</p>
+
+            <div class="zone-moderation">
+                <textarea class="champ-commentaire-moderation" placeholder="Commentaire pour le contributeur (optionnel)">${contribution.commentaire_moderateur || ""}</textarea>
+                <div class="actions-moderation">
+                    <button type="button" class="bouton-principal bouton-approuver" ${dejaTraitee ? "disabled" : ""}>
+                        <i class="fa-solid fa-check"></i> Approuver
+                    </button>
+                    <button type="button" class="bouton-secondaire bouton-rejeter" ${dejaTraitee ? "disabled" : ""}>
+                        <i class="fa-solid fa-xmark"></i> Rejeter
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
 // FICHIERS (Storage) — génère une URL de lecture pour un fichier de livre
 // ==========================================
 
