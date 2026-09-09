@@ -194,6 +194,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
+            // Désactivé : évite qu'une police système portant le même nom que
+            // celle du PDF (souvent une police arabe propriétaire non incorporée)
+            // soit utilisée sur une plateforme mais pas une autre, donnant un
+            // rendu incohérent selon l'appareil (ex: correct sur ordinateur,
+            // "hiéroglyphes" sur iPhone qui n'a pas cette police).
+            useSystemFonts: false,
         });
 
         // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
