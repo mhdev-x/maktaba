@@ -215,4 +215,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     gererEtatConnexion();
+
+    // ==========================================
+    // 7. 📖 TRANSITION "PAGE QUI SE TOURNE" ENTRE LES PAGES
+    // ==========================================
+    let overlayTransition = document.createElement("div");
+    overlayTransition.id = "transition-livre";
+    document.body.appendChild(overlayTransition);
+
+    // Animation d'arrivée sur cette page
+    document.body.classList.add("transition-entree");
+    overlayTransition.addEventListener("animationend", () => {
+        document.body.classList.remove("transition-entree");
+    }, { once: true });
+
+    // Interception des clics sur les liens internes pour jouer l'animation
+    // de sortie avant de changer réellement de page.
+    document.addEventListener("click", (e) => {
+        let lien = e.target.closest("a");
+        if (!lien) return;
+
+        let href = lien.getAttribute("href");
+        if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+        if (lien.target === "_blank" || lien.hasAttribute("download")) return;
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return; // laisser le navigateur gérer l'ouverture dans un nouvel onglet
+
+        let urlCible;
+        try {
+            urlCible = new URL(href, window.location.href);
+        } catch {
+            return;
+        }
+        if (urlCible.origin !== window.location.origin) return; // lien externe : pas d'effet
+
+        e.preventDefault();
+        document.body.classList.add("transition-sortie");
+        overlayTransition.addEventListener("animationend", () => {
+            window.location.href = urlCible.href;
+        }, { once: true });
+    });
 });
