@@ -177,11 +177,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            let viewport = page.getViewport({ scale: echelle });
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            // 1. Récupérer le ratio de densité de l'écran (ex: 2 pour Retina/Smartphone, 1.25, etc.)
+            let pixelRatio = window.devicePixelRatio || 1;
 
-            await page.render({ canvasContext: contexte, viewport }).promise;
+            // 2. Calculer le viewport en tenant compte du ratio d'écran
+            let viewport = page.getViewport({ scale: echelle * pixelRatio });
+
+            // 3. Ajuster la résolution interne du canvas (haute définition)
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+
+            // 4. Forcer la taille d'affichage CSS pour ne pas que le canvas soit géant à l'écran
+            canvas.style.width = `${Math.floor(viewport.width / pixelRatio)}px`;
+            canvas.style.height = `${Math.floor(viewport.height / pixelRatio)}px`;
+
+            // 5. Lancer le rendu
+            await page.render({ 
+                canvasContext: contexte, 
+                viewport: viewport 
+            }).promise;
 
             chargementLecteur.hidden = true;
             canvas.hidden = false;
