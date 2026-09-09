@@ -3,38 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Parcourez le catalogue complet de Maktaba : recherchez et filtrez les ouvrages islamiques par catégorie et par langue.">
+    <meta name="description" content="Comment contribuer à Maktaba : proposer un ouvrage, contribuer au code, signaler un bug.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <title>Bibliothèque — Maktaba</title>
+    <title>Contribuer — Maktaba</title>
 </head>
 <body>
 
-    <!-- =========================================
-         EN-TÊTE & NAVIGATION
-         ========================================= -->
     <header class="en-tete">
         <nav class="barre-navigation">
             <a href="../index.html" class="logo">Maktaba</a>
-
             <div class="liens-navigation">
                 <a href="../index.html" class="lien-navigation">Accueil</a>
-                <a href="livres.html" class="lien-navigation actif">Bibliothèque</a>
+                <a href="livres.html" class="lien-navigation">Bibliothèque</a>
                 <a href="categories.html" class="lien-navigation">Collections</a>
                 <a href="auteurs.html" class="lien-navigation">Auteurs</a>
                 <a href="a-propos.html" class="lien-navigation">À propos</a>
-
                 <div class="actions-navigation-mobile">
                     <button class="bouton-theme bascule-theme" type="button" style="margin-bottom: 10px;">
-                        <i class="fa-solid fa-moon"></i> 
-                        <span>Basculer le thème</span>
+                        <i class="fa-solid fa-moon"></i> <span>Basculer le thème</span>
                     </button>
                     <button class="bouton-recherche btn-ouvrir-recherche" type="button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Rechercher</span>
+                        <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
                     </button>
                     <div class="compte-mobile" id="compte-mobile">
     <a href="connexion.html" class="bouton-connexion" id="bouton-compte-mobile">
@@ -44,21 +37,18 @@
 </div>
                 </div>
             </div>
-
             <div class="actions-navigation">
                 <button class="bouton-theme bascule-theme" type="button" aria-label="Changer de thème">
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 <button class="bouton-recherche btn-ouvrir-recherche" type="button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Rechercher</span>
+                    <i class="fa-solid fa-magnifying-glass"></i><span>Rechercher</span>
                 </button>
                 <div class="menu-compte" id="menu-compte">
     <button class="bouton-connexion" id="bouton-compte" type="button" aria-haspopup="true" aria-expanded="false">
         <i class="fa-solid fa-user"></i>
         <span>Connexion</span>
     </button>
-
     <div class="dropdown-compte" id="dropdown-compte" hidden>
         <a href="connexion.html" class="dropdown-item" id="lien-mon-profil">
             <i class="fa-solid fa-circle-user"></i> Mon profil
@@ -69,98 +59,75 @@
     </div>
 </div>
             </div>
-
             <button class="bouton-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </nav>
     </header>
 
-    <!-- =========================================
-         CONTENU PRINCIPAL : LA BIBLIOTHÈQUE
-         ========================================= -->
     <main id="contenu-principal">
 
-        <!-- En-tête de la page -->
         <section class="section-en-tete-page">
             <div class="conteneur-en-tete-page">
-                <span class="surtitre-section">Catalogue</span>
-                <h1 class="titre-page">La Bibliothèque</h1>
+                <span class="surtitre-section">Œuvre collective</span>
+                <h1 class="titre-page">Contribuer à Maktaba</h1>
                 <p class="description-page">
-                    Explorez l'ensemble des ouvrages islamiques référencés.
-                    Filtrez par discipline, recherche ou langue.
+                    Maktaba est un projet open source. Que tu saches coder ou non, il y a une façon de participer.
                 </p>
             </div>
         </section>
 
-        <!-- =========================================
-             OUTILS : RECHERCHE + FILTRES
-             ========================================= -->
-        <section class="section-outils-bibliotheque">
-            <div class="conteneur-outils">
+        <section class="section-a-propos">
+            <div class="conteneur-a-propos">
 
-                <div class="barre-recherche-bibliotheque">
-                    <i class="fa-solid fa-magnifying-glass icone-recherche"></i>
-                    <input type="search" id="champ-recherche" class="champ-recherche" placeholder="Rechercher un titre, un auteur, un mot-clé..." autocomplete="off">
-                </div>
-
-                <div class="zone-filtres">
-                    <div class="groupe-filtre">
-                        <span class="label-filtre">Catégorie</span>
-                        <div class="liste-filtres" id="filtres-categories">
-                            <button class="bouton-filtre actif" data-filtre="tous" type="button">Tous</button>
-                            <button class="bouton-filtre" data-filtre="aqida" type="button">Aqida</button>
-                            <button class="bouton-filtre" data-filtre="coran" type="button">Coran</button>
-                            <button class="bouton-filtre" data-filtre="hadith" type="button">Hadith</button>
-                            <button class="bouton-filtre" data-filtre="tafsir" type="button">Tafsir</button>
-                            <button class="bouton-filtre" data-filtre="fiqh" type="button">Fiqh</button>
-                            <button class="bouton-filtre" data-filtre="sira" type="button">Sira</button>
-                            <button class="bouton-filtre" data-filtre="adab" type="button">Adab</button>
-                            <button class="bouton-filtre" data-filtre="usul" type="button">Usul al-Fiqh</button>
-                            <button class="bouton-filtre" data-filtre="arabe" type="button">Langue Arabe</button>
-                        </div>
-                    </div>
-
-                    <div class="groupe-filtre">
-                        <span class="label-filtre">Langue</span>
-                        <div class="liste-filtres" id="filtres-langues">
-                            <button class="bouton-filtre actif" data-filtre="tous" type="button">Toutes</button>
-                            <button class="bouton-filtre" data-filtre="arabe" type="button">Arabe</button>
-                            <button class="bouton-filtre" data-filtre="francais" type="button">Français</button>
-                            <button class="bouton-filtre" data-filtre="anglais" type="button">Anglais</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="meta-resultats">
-                    <p class="compteur-resultats">
-                        <span id="nombre-resultats">8</span> ouvrages
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-solid fa-book-open"></i></div>
+                    <h2>Proposer un ouvrage</h2>
+                    <p>
+                        Tu connais un livre fiable, sur le manhaj des Salaf, qui mériterait sa place ici ? Aucune compétence technique requise : un formulaire en ligne suffit. Chaque proposition est examinée par un modérateur avant publication, notamment pour vérifier les droits de republication.
                     </p>
-                </div>
-            </div>
-        </section>
+                    <div class="actions-propos">
+                        <a href="proposer.html" class="bouton-principal">Proposer un ouvrage</a>
+                    </div>
+                </article>
 
-        <!-- =========================================
-             GRILLE DES LIVRES
-             ========================================= -->
-        <section class="section-catalogue">
-            <div class="conteneur-catalogue">
-                <div class="grille-livres" id="grille-catalogue">
-                    <p class="message-vide-inline" id="message-chargement">Chargement du catalogue...</p>
-                </div>
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-brands fa-github"></i></div>
+                    <h2>Contribuer au code</h2>
+                    <p>
+                        Le projet est entièrement en HTML, CSS et JavaScript, sans framework, pensé pour rester lisible et accessible à qui veut apprendre en contribuant. Le dépôt est ouvert aux pull requests : corrections de bugs, amélioration de l'accessibilité, traductions, ou nouvelles fonctionnalités.
+                    </p>
+                    <p>
+                        Avant de proposer un changement important, ouvre une issue pour en discuter — ça évite le travail en double et permet d'aligner l'idée avec la direction du projet.
+                    </p>
+                    <div class="actions-propos">
+                        <a href="https://github.com/mhdev-x/maktaba" target="_blank" rel="noopener" class="bouton-principal">
+                            <i class="fa-brands fa-github"></i> Voir le dépôt
+                        </a>
+                        <a href="https://github.com/mhdev-x/maktaba/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener" class="bouton-secondaire">
+                            Guide de contribution
+                        </a>
+                    </div>
+                </article>
 
-                <div class="message-vide" id="message-vide" hidden>
-                    <i class="fa-solid fa-book-open"></i>
-                    <p>Aucun ouvrage ne correspond à votre recherche.</p>
-                </div>
+                <article class="bloc-texte-propos">
+                    <div class="icone-propos"><i class="fa-solid fa-bug"></i></div>
+                    <h2>Signaler un problème</h2>
+                    <p>
+                        Un bug, un lien cassé, une erreur dans une fiche de livre ou d'auteur ? Ouvre une issue sur GitHub en décrivant ce que tu as constaté — c'est déjà une contribution précieuse, même sans écrire une seule ligne de code.
+                    </p>
+                    <div class="actions-propos">
+                        <a href="https://github.com/mhdev-x/maktaba/issues" target="_blank" rel="noopener" class="bouton-secondaire">
+                            <i class="fa-brands fa-github"></i> Ouvrir une issue
+                        </a>
+                    </div>
+                </article>
+
             </div>
         </section>
 
     </main>
 
-    <!-- =========================================
-         PIED DE PAGE (FOOTER)
-         ========================================= -->
     <footer class="pied-page">
         <div class="conteneur-pied-page">
             <div class="grille-pied-page">
@@ -169,7 +136,6 @@
                     <p class="description-pied-page">Bibliothèque islamique numérique dédiée à l'apprentissage, la recherche et la préservation des sciences islamiques.</p>
                     <div class="badge-opensource"><i class="fa-brands fa-osi"></i> Projet Open Source</div>
                 </div>
-
                 <div class="colonne-pied-page">
                     <h4 class="titre-colonne-pied-page">Navigation</h4>
                     <ul class="liens-pied-page">
@@ -180,18 +146,16 @@
                         <li><a href="a-propos.html">À propos</a></li>
                     </ul>
                 </div>
-
                 <div class="colonne-pied-page">
                     <h4 class="titre-colonne-pied-page">Collections</h4>
                     <ul class="liens-pied-page">
-                        <li><a href="categories.html">العقيدة — Aqida</a></li>
-                        <li><a href="categories.html">الحديث — Hadith</a></li>
-                        <li><a href="categories.html">التفسير — Tafsir</a></li>
-                        <li><a href="categories.html">الفقه — Fiqh</a></li>
-                        <li><a href="categories.html">السيرة — Sira</a></li>
+                        <li><a href="livres.html?categorie=aqida">العقيدة — Aqida</a></li>
+                        <li><a href="livres.html?categorie=hadith">الحديث — Hadith</a></li>
+                        <li><a href="livres.html?categorie=tafsir">التفسير — Tafsir</a></li>
+                        <li><a href="livres.html?categorie=fiqh">الفقه — Fiqh</a></li>
+                        <li><a href="livres.html?categorie=sira">السيرة — Sira</a></li>
                     </ul>
                 </div>
-
                 <div class="colonne-pied-page">
                     <h4 class="titre-colonne-pied-page">Communauté</h4>
                     <ul class="liens-pied-page">
@@ -202,7 +166,6 @@
                     </ul>
                 </div>
             </div>
-
             <div class="bas-pied-page">
                 <p class="copyright-pied-page">&copy; 2026 Maktaba. Tous droits réservés.</p>
                 <p class="verset-pied-page" dir="rtl">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
@@ -210,10 +173,9 @@
         </div>
     </footer>
 
-    <!-- Scripts JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
 <script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
-<script src="../js/livres.js"></script>
 </body>
 </html>
