@@ -2616,6 +2616,61 @@ body.theme-clair .badge-collection-meta {
 }
 
 /* =========================================
+   TRANSITION "PAGE QUI SE TOURNE" ENTRE LES PAGES
+   ========================================= */
+#transition-livre {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: linear-gradient(120deg, var(--couleur-surface) 0%, var(--couleur-fond) 100%);
+    transform-origin: left center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+body.transition-sortie #transition-livre {
+    animation: maktaba-tourner-page-sortie 0.45s ease-in forwards;
+}
+
+body.transition-entree #transition-livre {
+    animation: maktaba-tourner-page-entree 0.45s ease-out forwards;
+}
+
+@keyframes maktaba-tourner-page-sortie {
+    0% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg);
+        box-shadow: -20px 0 40px rgba(0, 0, 0, 0.35);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(-100deg);
+        box-shadow: -60px 0 60px rgba(0, 0, 0, 0.55);
+    }
+}
+
+@keyframes maktaba-tourner-page-entree {
+    0% {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(100deg);
+        box-shadow: 60px 0 60px rgba(0, 0, 0, 0.55);
+    }
+    100% {
+        opacity: 0;
+        transform: perspective(1600px) rotateY(0deg);
+        box-shadow: none;
+    }
+}
+
+/* Les visiteurs qui préfèrent moins d'animations n'ont pas cet effet */
+@media (prefers-reduced-motion: reduce) {
+    body.transition-sortie #transition-livre,
+    body.transition-entree #transition-livre {
+        animation: none;
+    }
+}
+
+/* =========================================
    LECTEUR PDF INTÉGRÉ
    ========================================= */
 body.page-lecteur {
@@ -2778,3 +2833,73 @@ body.page-lecteur {
 }
 
 body.theme-clair .zone-canvas { background-color: #EDEAE3; }
+
+/* Animation de chargement du lecteur PDF */
+.chargement-lecteur {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 40px;
+    margin: auto;
+    max-width: 320px;
+    text-align: center;
+}
+
+.icone-livre-anime {
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+
+.icone-livre-anime i {
+    font-size: 3.2rem;
+    color: var(--couleur-accent);
+    display: block;
+    animation: maktaba-livre-respire 1.8s ease-in-out infinite;
+}
+
+.icone-livre-anime .page-tournante {
+    position: absolute;
+    top: 6px;
+    right: 2px;
+    width: 16px;
+    height: 22px;
+    background: var(--couleur-fond);
+    border: 1px solid var(--couleur-accent);
+    border-radius: 0 4px 4px 0;
+    transform-origin: left center;
+    animation: maktaba-page-tourne 1.4s ease-in-out infinite;
+}
+
+@keyframes maktaba-livre-respire {
+    0%, 100% { transform: scale(1); opacity: 0.75; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes maktaba-page-tourne {
+    0%, 100% { transform: perspective(100px) rotateY(0deg); }
+    50% { transform: perspective(100px) rotateY(-150deg); }
+}
+
+.texte-chargement {
+    color: var(--couleur-secondaire);
+    font-size: 0.9rem;
+}
+
+.barre-chargement-lecteur {
+    width: 220px;
+}
+
+.chargement-lecteur.etat-erreur .icone-livre-anime,
+.chargement-lecteur.etat-erreur .barre-chargement-lecteur {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .icone-livre-anime i,
+    .icone-livre-anime .page-tournante {
+        animation: none;
+    }
+}

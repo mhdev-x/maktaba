@@ -1,14 +1,6 @@
 // ==========================================================================
 // MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
 // PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
-// externe : structure garantie stable, aucune dépendance à un tiers pour
-// une fonctionnalité centrale du site. Chargé en import() dynamique, car
-// PDF.js n'est distribué qu'en module ES (pas de <script> classique).
-// ==========================================================================
-
-// ==========================================================================
-// MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
-// PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
 // externe : structure garantie stable (lib, worker, cmaps, polices et wasm
 // viennent tous du même paquet officiel vérifié), aucune dépendance à un
 // tiers pour une fonctionnalité centrale du site. Chargé en import()
@@ -29,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let slug = parametres.get("slug");
 
     let messageChargement = document.getElementById("message-chargement-pdf");
+    let chargementLecteur = document.getElementById("chargement-lecteur");
+    let barreChargement = document.getElementById("barre-chargement-pdf");
     let canvas = document.getElementById("canvas-pdf");
     let titreLecteur = document.getElementById("titre-lecteur");
     let lienRetour = document.getElementById("lien-retour-livre");
@@ -44,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let sommaireLecteur = document.getElementById("sommaire-lecteur");
 
     function afficherMessage(texte) {
+        if (chargementLecteur) chargementLecteur.classList.add("etat-erreur");
         messageChargement.textContent = texte;
         messageChargement.hidden = false;
         canvas.hidden = true;
@@ -110,13 +105,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let document_;
     try {
-        document_ = await pdfjsLib.getDocument({
+        let tacheChargement = pdfjsLib.getDocument({
             url: urlFichier,
             cMapUrl: `${PDFJS_BASE}cmaps/`,
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
-        }).promise;
+        });
+
+        // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
+        // face à un texte figé pendant potentiellement plusieurs secondes.
+        tacheChargement.onProgress = ({ loaded, total }) => {
+            if (total) {
+                let pourcentage = Math.round((loaded / total) * 100);
+                messageChargement.textContent = `Chargement du document... ${pourcentage}%`;
+                if (barreChargement) barreChargement.style.width = `${pourcentage}%`;
+            } else {
+                let mo = (loaded / 1024 / 1024).toFixed(1);
+                messageChargement.textContent = `Chargement du document... (${mo} Mo)`;
+                if (barreChargement) barreChargement.style.width = "60%"; // taille inconnue : on avance quand même visuellement
+            }
+        };
+
+        document_ = await tacheChargement.promise;
     } catch (erreur) {
         console.error("Maktaba : erreur d'ouverture du PDF.", erreur);
         afficherMessage("Ce fichier n'a pas pu être ouvert.");
@@ -126,7 +137,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let nbPages = document_.numPages;
     let pageActuelle = 1;
     let echelle = 1.2;
-    const ECHELLE_BASE = 1.2;
+    let echelleBase = 1.2; // recalculée automatiquement au premier rendu (voir plus bas)
+    let echelleInitialisee = false;
+    const ECHELLE_MIN = 0.5;
+    const ECHELLE_MAX = 3;
 
     // --- Reprise de la progression de lecture ---
     if (utilisateurId) {
@@ -145,24 +159,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function afficherPage(numero) {
         if (renduEnCours || numero < 1 || numero > nbPages) return;
         renduEnCours = true;
-        messageChargement.hidden = true;
 
         try {
             let page = await document_.getPage(numero);
+
+            // Au tout premier rendu, on ajuste l'échelle à la largeur réellement
+            // disponible plutôt que d'utiliser une valeur fixe : une page scannée
+            // en haute résolution se rend beaucoup plus vite à une échelle adaptée
+            // qu'agrandie inutilement au-delà de ce qui sera affiché à l'écran.
+            if (!echelleInitialisee) {
+                let viewportBrut = page.getViewport({ scale: 1 });
+                let largeurDisponible = document.getElementById("zone-canvas").clientWidth - 64;
+                if (largeurDisponible > 0) {
+                    echelle = Math.min(ECHELLE_MAX, Math.max(ECHELLE_MIN, largeurDisponible / viewportBrut.width));
+                    echelleBase = echelle;
+                }
+                echelleInitialisee = true;
+            }
+
             let viewport = page.getViewport({ scale: echelle });
             canvas.width = viewport.width;
             canvas.height = viewport.height;
 
             await page.render({ canvasContext: contexte, viewport }).promise;
 
+            chargementLecteur.hidden = true;
             canvas.hidden = false;
         } catch (erreur) {
             // Une page corrompue ou mal encodée ne doit pas bloquer la lecture
             // du reste du livre : on le signale et on laisse naviguer ailleurs.
             console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
             canvas.hidden = true;
+            chargementLecteur.classList.add("etat-erreur");
+            chargementLecteur.hidden = false;
             messageChargement.textContent = `Cette page (${numero}) n'a pas pu être affichée. Essayez la suivante.`;
-            messageChargement.hidden = false;
         }
 
         pageActuelle = numero;
@@ -186,15 +216,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     function mettreAJourZoom() {
-        pourcentageZoom.textContent = `${Math.round((echelle / ECHELLE_BASE) * 100)}%`;
+        pourcentageZoom.textContent = `${Math.round((echelle / echelleBase) * 100)}%`;
         afficherPage(pageActuelle);
     }
     boutonZoomMoins.addEventListener("click", () => {
-        echelle = Math.max(0.6, +(echelle - 0.2).toFixed(2));
+        echelle = Math.max(ECHELLE_MIN, +(echelle - 0.2).toFixed(2));
         mettreAJourZoom();
     });
     boutonZoomPlus.addEventListener("click", () => {
-        echelle = Math.min(3, +(echelle + 0.2).toFixed(2));
+        echelle = Math.min(ECHELLE_MAX, +(echelle + 0.2).toFixed(2));
         mettreAJourZoom();
     });
 

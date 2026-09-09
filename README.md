@@ -30,6 +30,10 @@ maktaba/
 ├── js/                     # Scripts (un fichier par page + data.js partagé)
 │   └── vendor/pdfjs/       # PDF.js hébergé localement
 ├── pages/                  # Toutes les autres pages du site
+└── supabase/
+    ├── schema.sql                      # Schéma complet (tables, RLS, seed)
+    └── ajouter-un-livre-template.sql   # Gabarit pour ajouter un livre manuellement
+```
 
 ## Installation (pour contribuer au code)
 

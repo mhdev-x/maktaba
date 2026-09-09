@@ -61,7 +61,16 @@
             </div>
 
             <div class="zone-canvas" id="zone-canvas">
-                <p class="message-vide-inline" id="message-chargement-pdf">Chargement du document...</p>
+                <div class="chargement-lecteur" id="chargement-lecteur">
+                    <div class="icone-livre-anime">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span class="page-tournante"></span>
+                    </div>
+                    <p class="texte-chargement" id="message-chargement-pdf">Chargement du document...</p>
+                    <div class="barre-progression-conteneur barre-chargement-lecteur">
+                        <div class="barre-progression-remplissage" id="barre-chargement-pdf" style="width: 0%;"></div>
+                    </div>
+                </div>
                 <canvas id="canvas-pdf" hidden></canvas>
             </div>
         </main>
