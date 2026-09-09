@@ -97,6 +97,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         pdfjsLib = await import(`${PDFJS_BASE}pdf.mjs`);
         pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.mjs`;
+        
+        // Filtrer les warnings de polices système pour garder une console propre
+        const warnOriginal = console.warn;
+        console.warn = function(...args) {
+            const message = args[0]?.toString() || '';
+            if (message.includes('Cannot load system font')) {
+                return; // Ignore silencieusement ces warnings
+            }
+            warnOriginal.apply(console, args);
+        };
+        
     } catch (erreur) {
         console.error("Maktaba : erreur de chargement de PDF.js.", erreur);
         afficherMessage("Le lecteur n'a pas pu se charger. Vérifiez votre connexion.");
@@ -111,6 +122,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
+            useSystemFonts: false,      // Force l'utilisation des polices standard de PDF.js
+            disableFontFace: false,     // Conserve la qualité de rendu vectoriel
         });
 
         // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
