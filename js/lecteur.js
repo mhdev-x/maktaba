@@ -2,6 +2,19 @@
 // MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
 // ==========================================================================
 
+// POLYFILL MOBILE : Correctif pour Safari / WebKit mobile manquant Map.prototype.getOrInsertComputed
+// Requis par les versions récentes de PDF.js pour éviter le TypeError sur iOS.
+if (typeof Map.prototype.getOrInsertComputed !== "function") {
+    Map.prototype.getOrInsertComputed = function(key, computeFn) {
+        if (this.has(key)) {
+            return this.get(key);
+        }
+        const value = computeFn(key);
+        this.set(key, value);
+        return value;
+    };
+}
+
 const PDFJS_BASE = (() => {
     let urlScript = document.currentScript ? document.currentScript.src : null;
     return urlScript
@@ -84,7 +97,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // Détection mobile
     const estMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     let pdfjsLib;
@@ -115,7 +127,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
             useSystemFonts: false,
-            // Sur mobile, forcer la conversion des fontes en Canvas natif pour éviter les crashs Safari FontFace
             disableFontFace: estMobile, 
             disableAutoFetch: true,
             disableStream: true,
@@ -167,7 +178,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function afficherPage(numero) {
         if (numero < 1 || numero > nbPages) return;
 
-        // Si un rendu est déjà en cours, on l'annule proprement avant de lancer le nouveau
         if (tacheRenduEnCours) {
             try {
                 tacheRenduEnCours.cancel();
@@ -190,16 +200,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            // Calcul du ratio de pixel strict pour mobile (1.0 sur mobile garantit la stabilité mémoire absolue)
             let pixelRatio = estMobile ? 1.0 : (window.devicePixelRatio || 1.0);
-
             let viewport = page.getViewport({ scale: echelle * pixelRatio });
 
-            // Redimensionnement du canvas HTML
             canvas.width = Math.floor(viewport.width);
             canvas.height = Math.floor(viewport.height);
 
-            // Ajustement CSS
             canvas.style.width = `${Math.floor(viewport.width / pixelRatio)}px`;
             canvas.style.height = `${Math.floor(viewport.height / pixelRatio)}px`;
 
@@ -215,7 +221,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             chargementLecteur.hidden = true;
             canvas.hidden = false;
         } catch (erreur) {
-            // Ignorer l'erreur si elle provient d'une annulation volontaire
             if (erreur?.name === 'RenderingCancelledException') {
                 return;
             }
