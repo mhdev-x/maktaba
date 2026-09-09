@@ -135,15 +135,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!reponse.ok) throw new Error("Échec du téléchargement.");
         let dataBuffer = await reponse.arrayBuffer();
 
-        // Encodage strict avec fallback CDN pour les cmaps si le serveur local bloque les MIME types binaires
+        // Encodage strict et contournement du sanitizer de fontes Safari Mobile
         let optionsChargement = {
             data: dataBuffer,
             cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
             cMapPacked: true,
             standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/",
-            isEvalSupported: false,
-            useSystemFonts: true,
-            disableFontFace: false
+            // FIX SAFARI MOBILE : 
+            // Forcer disableFontFace à TRUE sur mobile empêche Safari de rejeter la police du PDF 
+            // et force PDF.js à dessiner les lettres sous forme de formes géométriques (vectorielles).
+            disableFontFace: estMobile ? true : false,
+            useSystemFonts: false,
+            isEvalSupported: false
         };
 
         let tacheChargement = pdfjsLib.getDocument(optionsChargement);
