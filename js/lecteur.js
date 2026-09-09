@@ -3,7 +3,6 @@
 // ==========================================================================
 
 // POLYFILL MOBILE : Correctif pour Safari / WebKit mobile manquant Map.prototype.getOrInsertComputed
-// Requis par les versions récentes de PDF.js pour éviter le TypeError sur iOS.
 if (typeof Map.prototype.getOrInsertComputed !== "function") {
     Map.prototype.getOrInsertComputed = function(key, computeFn) {
         if (this.has(key)) {
@@ -126,8 +125,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             cMapPacked: true,
             standardFontDataUrl: `${PDFJS_BASE}standard_fonts/`,
             wasmUrl: `${PDFJS_BASE}wasm/`,
-            useSystemFonts: false,
-            disableFontFace: estMobile, 
+            useSystemFonts: true,          // Autorise les polices système de secours
+            disableFontFace: false,         // Nécessaire pour afficher les caractères arabes/spéciaux correctement
             disableAutoFetch: true,
             disableStream: true,
             disableRange: true
