@@ -733,9 +733,6 @@ a.carte-livre {
 }
 
 .badge-categorie {
-    position: absolute;
-    top: 14px;
-    left: 14px;
     padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.7rem;
@@ -744,6 +741,17 @@ a.carte-livre {
     color: var(--couleur-texte);
     background-color: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+}
+
+.badges-categorie-carte {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 .corps-carte-livre {

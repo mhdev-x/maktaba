@@ -510,7 +510,7 @@ function maktabaCarteLivreHTML(livre) {
     let categories = maktabaCategoriesDe(livre);
     let slugsCategories = categories.map(c => c.slug).join(",");
     let badgesCategorie = categories.length
-        ? categories.map(c => `<span class="badge-categorie">${c.nom}</span>`).join("")
+        ? `<div class="badges-categorie-carte">${categories.map(c => `<span class="badge-categorie">${c.nom}</span>`).join("")}</div>`
         : "";
     let meta = maktabaMetaSecondaire(livre);
 
