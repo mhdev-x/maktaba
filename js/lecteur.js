@@ -280,24 +280,33 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            let viewport = page.getViewport({ scale: echelle });
+            // Taille d'affichage voulue (en pixels CSS)
+            let viewportAffichage = page.getViewport({ scale: echelle });
 
-            // Sécurité : Safari sur iPhone/iPad limite la taille d'un <canvas>
-            // à environ 16 millions de pixels (contre bien plus sur ordinateur).
-            // Au-delà, le rendu échoue silencieusement. On réduit l'échelle
-            // automatiquement si la page (souvent un scan haute résolution)
-            // dépasserait cette limite.
+            // Rendu net sur écrans haute densité (Retina, la quasi-totalité des
+            // smartphones et laptops récents) : on dessine sur un canvas dont
+            // la résolution réelle est supérieure à la taille affichée, sinon
+            // le rendu paraît flou comparé à un lecteur PDF natif.
+            let ratioPixels = Math.min(window.devicePixelRatio || 1, 2.5); // plafonné pour la mémoire
+            let viewportRendu = page.getViewport({ scale: echelle * ratioPixels });
+
+            // Sécurité : Safari sur iPhone/iPad limite la taille réelle (en
+            // pixels) d'un <canvas> à environ 16 millions — on réduit l'échelle
+            // si le rendu haute densité la dépasserait, plutôt que d'échouer.
             const PIXELS_MAX_CANVAS = 16000000;
-            if (viewport.width * viewport.height > PIXELS_MAX_CANVAS) {
-                let facteurReduction = Math.sqrt(PIXELS_MAX_CANVAS / (viewport.width * viewport.height));
+            if (viewportRendu.width * viewportRendu.height > PIXELS_MAX_CANVAS) {
+                let facteurReduction = Math.sqrt(PIXELS_MAX_CANVAS / (viewportRendu.width * viewportRendu.height));
                 echelle = +(echelle * facteurReduction).toFixed(2);
-                viewport = page.getViewport({ scale: echelle });
+                viewportAffichage = page.getViewport({ scale: echelle });
+                viewportRendu = page.getViewport({ scale: echelle * ratioPixels });
             }
 
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            canvas.width = Math.floor(viewportRendu.width);
+            canvas.height = Math.floor(viewportRendu.height);
+            canvas.style.width = `${Math.floor(viewportAffichage.width)}px`;
+            canvas.style.height = `${Math.floor(viewportAffichage.height)}px`;
 
-            await page.render({ canvasContext: contexte, viewport }).promise;
+            await page.render({ canvasContext: contexte, viewport: viewportRendu }).promise;
 
             chargementLecteur.hidden = true;
             canvas.hidden = false;
