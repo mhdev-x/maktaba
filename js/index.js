@@ -4,7 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
     // --- Livre à la une (hero) ---
-    let vedette = await chargerLivreParSlug("aqida-ahl-sounnah-wal-Jamaah");
+    let vedette = await chargerLivreParSlug("riyad-as-salihin");
     if (vedette) {
         let elArabe = document.getElementById("hero-arabe");
         let elTitre = document.getElementById("hero-titre");

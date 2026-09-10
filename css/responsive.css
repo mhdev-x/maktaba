@@ -143,9 +143,8 @@
         justify-content: center;
     }
 
-    .carte-livre-hero, a {
+    .carte-livre-hero {
         max-width: 280px;
-        
     }
 
     .en-tete-section {

@@ -133,6 +133,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let nombreTotalPages = document.getElementById("nombre-total-pages");
     let boutonPrecedent = document.getElementById("bouton-page-precedente");
     let boutonSuivant = document.getElementById("bouton-page-suivante");
+    let zoneCanvasEl = document.getElementById("zone-canvas");
+    let boutonModeContinu = document.getElementById("bouton-mode-continu");
+    let boutonPleinEcran = document.getElementById("bouton-plein-ecran");
     let boutonZoomMoins = document.getElementById("bouton-zoom-moins");
     let boutonZoomPlus = document.getElementById("bouton-zoom-plus");
     let pourcentageZoom = document.getElementById("pourcentage-zoom");
@@ -240,6 +243,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let nbPages = document_.numPages;
     let pageActuelle = 1;
     let echelle = 1.2;
+    let modeContinu = false;
+    let conteneurContinu = null;
+    let observateurPagesContinu = null;
     let echelleBase = 1.2; // recalculée automatiquement au premier rendu (voir plus bas)
     let echelleInitialisee = false;
     const ECHELLE_MIN = 0.5;
@@ -354,8 +360,240 @@ document.addEventListener("DOMContentLoaded", async () => {
         mettreAJourZoom();
     });
 
+    // --- Plein écran ---
+    if (boutonPleinEcran) {
+        boutonPleinEcran.addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                document.querySelector(".zone-lecture").requestFullscreen?.().catch(() => {});
+            } else {
+                document.exitFullscreen?.();
+            }
+        });
+        document.addEventListener("fullscreenchange", () => {
+            let actif = !!document.fullscreenElement;
+            boutonPleinEcran.classList.toggle("actif", actif);
+            boutonPleinEcran.querySelector("i").className = actif ? "fa-solid fa-compress" : "fa-solid fa-expand";
+        });
+    }
+
+    // --- Gestes tactiles (mode page unique) : balayage, double-tap, pincement ---
+    let toucheDepartX = null, toucheDepartY = null, toucheDepartTemps = null;
+    let pincementDistanceDepart = null, pincementEchelleDepart = null, pincementFacteurCourant = 1;
+    let dernierTapTemps = 0;
+
+    function distanceEntreDoigts(touches) {
+        let dx = touches[0].clientX - touches[1].clientX;
+        let dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    zoneCanvasEl.addEventListener("touchstart", (e) => {
+        if (modeContinu) return; // le défilement continu gère le scroll nativement
+        if (e.touches.length === 2) {
+            pincementDistanceDepart = distanceEntreDoigts(e.touches);
+            pincementEchelleDepart = echelle;
+            pincementFacteurCourant = 1;
+        } else if (e.touches.length === 1) {
+            toucheDepartX = e.touches[0].clientX;
+            toucheDepartY = e.touches[0].clientY;
+            toucheDepartTemps = Date.now();
+        }
+    }, { passive: true });
+
+    zoneCanvasEl.addEventListener("touchmove", (e) => {
+        if (modeContinu) return;
+        if (e.touches.length === 2 && pincementDistanceDepart) {
+            e.preventDefault(); // empêche le zoom natif du navigateur de prendre le dessus
+            let distanceActuelle = distanceEntreDoigts(e.touches);
+            pincementFacteurCourant = distanceActuelle / pincementDistanceDepart;
+            // Retour visuel immédiat (peu coûteux) ; le re-rendu net se fait au relâchement
+            canvas.style.transform = `scale(${pincementFacteurCourant})`;
+        }
+    }, { passive: false });
+
+    zoneCanvasEl.addEventListener("touchend", (e) => {
+        if (modeContinu) return;
+
+        if (pincementDistanceDepart) {
+            canvas.style.transform = "";
+            let nouvelleEchelle = pincementEchelleDepart * pincementFacteurCourant;
+            echelle = Math.min(ECHELLE_MAX, Math.max(ECHELLE_MIN, +nouvelleEchelle.toFixed(2)));
+            pincementDistanceDepart = null;
+            pincementFacteurCourant = 1;
+            mettreAJourZoom();
+            return;
+        }
+
+        if (toucheDepartX === null) return;
+        let toucheFin = e.changedTouches[0];
+        let deltaX = toucheFin.clientX - toucheDepartX;
+        let deltaY = toucheFin.clientY - toucheDepartY;
+        let dureeMs = Date.now() - toucheDepartTemps;
+        toucheDepartX = null;
+
+        // Tap court et immobile : possible double-tap
+        if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && dureeMs < 300) {
+            let maintenant = Date.now();
+            if (maintenant - dernierTapTemps < 350) {
+                echelle = echelle > echelleBase * 1.3 ? echelleBase : Math.min(ECHELLE_MAX, echelleBase * 1.8);
+                mettreAJourZoom();
+                dernierTapTemps = 0;
+            } else {
+                dernierTapTemps = maintenant;
+            }
+            return;
+        }
+
+        // Balayage horizontal net = page suivante/précédente
+        if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+            if (deltaX < 0) afficherPage(pageActuelle + 1); // vers la gauche = page suivante
+            else afficherPage(pageActuelle - 1);
+        }
+    }, { passive: true });
+
+    // --- Mode défilement continu (alternative au mode page unique) ---
+    async function rendreCanvasContinu(c, numero) {
+        c.dataset.rendu = "1";
+        try {
+            let page = await document_.getPage(numero);
+            let dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+            let viewportRendu = page.getViewport({ scale: echelle * dpr });
+            c.width = Math.floor(viewportRendu.width);
+            c.height = Math.floor(viewportRendu.height);
+            await page.render({ canvasContext: c.getContext("2d"), viewport: viewportRendu }).promise;
+        } catch (erreur) {
+            console.error(`Maktaba : erreur de rendu (défilement continu) page ${numero}.`, erreur);
+            delete c.dataset.rendu; // permet de retenter si la page redevient visible
+        }
+    }
+
+    async function activerModeContinu() {
+        canvas.hidden = true;
+
+        conteneurContinu = document.createElement("div");
+        conteneurContinu.className = "conteneur-defilement-continu";
+        zoneCanvasEl.appendChild(conteneurContinu);
+
+        let pageReference = await document_.getPage(1);
+        let viewportReference = pageReference.getViewport({ scale: echelle });
+
+        for (let n = 1; n <= nbPages; n++) {
+            let c = document.createElement("canvas");
+            c.style.width = `${Math.floor(viewportReference.width)}px`;
+            c.style.height = `${Math.floor(viewportReference.height)}px`;
+            c.dataset.page = String(n);
+            c.className = "page-continue";
+            conteneurContinu.appendChild(c);
+        }
+
+        observateurPagesContinu = new IntersectionObserver((entrees) => {
+            entrees.forEach(entree => {
+                let c = entree.target;
+                let n = parseInt(c.dataset.page, 10);
+                if (entree.isIntersecting && !c.dataset.rendu) {
+                    rendreCanvasContinu(c, n);
+                }
+                if (entree.isIntersecting && entree.intersectionRatio > 0.5) {
+                    pageActuelle = n;
+                    champPage.value = n;
+                    if (utilisateurId) enregistrerProgression(livre.id, utilisateurId, n, nbPages);
+                }
+            });
+        }, { root: zoneCanvasEl, rootMargin: "150% 0px", threshold: [0, 0.5] });
+
+        conteneurContinu.querySelectorAll("canvas").forEach(c => observateurPagesContinu.observe(c));
+
+        let cibleInitiale = conteneurContinu.querySelector(`canvas[data-page="${pageActuelle}"]`);
+        if (cibleInitiale) cibleInitiale.scrollIntoView({ block: "start" });
+
+        // Pincement pour zoomer, disponible aussi en défilement continu
+        // (le balayage/double-tap n'ont pas d'équivalent ici : le défilement
+        // naturel à un doigt remplace déjà la navigation entre pages).
+        let pDistDepart = null, pEchelleDepart = null, pFacteurCourant = 1;
+
+        conteneurContinu.addEventListener("touchstart", (e) => {
+            if (e.touches.length === 2) {
+                pDistDepart = distanceEntreDoigts(e.touches);
+                pEchelleDepart = echelle;
+                pFacteurCourant = 1;
+            }
+        }, { passive: true });
+
+        conteneurContinu.addEventListener("touchmove", (e) => {
+            if (e.touches.length === 2 && pDistDepart) {
+                e.preventDefault();
+                pFacteurCourant = distanceEntreDoigts(e.touches) / pDistDepart;
+                conteneurContinu.style.transform = `scale(${pFacteurCourant})`;
+                conteneurContinu.style.transformOrigin = "top center";
+            }
+        }, { passive: false });
+
+        conteneurContinu.addEventListener("touchend", async () => {
+            if (pDistDepart) {
+                conteneurContinu.style.transform = "";
+                let nouvelleEchelle = pEchelleDepart * pFacteurCourant;
+                echelle = Math.min(ECHELLE_MAX, Math.max(ECHELLE_MIN, +nouvelleEchelle.toFixed(2)));
+                pDistDepart = null;
+                pFacteurCourant = 1;
+                await redimensionnerModeContinu();
+            }
+        }, { passive: true });
+    }
+
+    async function redimensionnerModeContinu() {
+        if (!conteneurContinu) return;
+        let pageReference = await document_.getPage(1);
+        let viewportReference = pageReference.getViewport({ scale: echelle });
+        let rectZone = zoneCanvasEl.getBoundingClientRect();
+        let canvases = Array.from(conteneurContinu.querySelectorAll("canvas"));
+
+        canvases.forEach(c => {
+            c.style.width = `${Math.floor(viewportReference.width)}px`;
+            c.style.height = `${Math.floor(viewportReference.height)}px`;
+            delete c.dataset.rendu;
+        });
+
+        // Re-rendre immédiatement les pages actuellement à l'écran à la nouvelle échelle
+        canvases.forEach(c => {
+            let rect = c.getBoundingClientRect();
+            if (rect.bottom > rectZone.top && rect.top < rectZone.bottom) {
+                rendreCanvasContinu(c, parseInt(c.dataset.page, 10));
+            }
+        });
+    }
+
+    function desactiverModeContinu() {
+        if (observateurPagesContinu) {
+            observateurPagesContinu.disconnect();
+            observateurPagesContinu = null;
+        }
+        if (conteneurContinu) {
+            conteneurContinu.remove();
+            conteneurContinu = null;
+        }
+        canvas.hidden = false;
+        afficherPage(pageActuelle);
+    }
+
+    if (boutonModeContinu) {
+        boutonModeContinu.addEventListener("click", async () => {
+            modeContinu = !modeContinu;
+            zoneCanvasEl.classList.toggle("mode-continu", modeContinu);
+            boutonModeContinu.classList.toggle("actif", modeContinu);
+            boutonModeContinu.querySelector("i").className = modeContinu ? "fa-solid fa-file" : "fa-solid fa-scroll";
+            boutonModeContinu.setAttribute("aria-label", modeContinu ? "Revenir au mode page unique" : "Basculer en défilement continu");
+
+            if (modeContinu) {
+                await activerModeContinu();
+            } else {
+                desactiverModeContinu();
+            }
+        });
+    }
+
     // Navigation au clavier (flèches gauche/droite)
     document.addEventListener("keydown", (e) => {
+        if (modeContinu) return; // en défilement continu, le clavier ne fait rien de spécial pour l'instant
         if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
         if (e.key === "ArrowRight") afficherPage(pageActuelle + 1);
         if (e.key === "ArrowLeft") afficherPage(pageActuelle - 1);
