@@ -1,0 +1,320 @@
+/* =========================================
+   MAKTABA — lecteur.css
+   Lecteur PDF intégré (barre d'outils, sommaire, journal technique, défilement continu)
+   ========================================= */
+
+   LECTEUR PDF INTÉGRÉ
+   ========================================= */
+body.page-lecteur {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.entete-lecteur {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background-color: var(--couleur-surface);
+    border-bottom: 1px solid rgba(245, 241, 232, 0.08);
+    flex-shrink: 0;
+}
+
+.bouton-retour-lecteur {
+    color: var(--couleur-texte);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+.bouton-retour-lecteur:hover { background-color: rgba(245, 241, 232, 0.06); }
+
+.titre-lecteur {
+    flex-grow: 1;
+    font-size: 1.05rem;
+    color: var(--couleur-texte);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conteneur-lecteur {
+    display: flex;
+    flex-grow: 1;
+    min-height: 0; /* nécessaire pour que les enfants en scroll fonctionnent en flexbox */
+}
+
+.sommaire-lecteur {
+    width: 260px;
+    flex-shrink: 0;
+    background-color: var(--couleur-surface);
+    border-right: 1px solid rgba(245, 241, 232, 0.08);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sommaire-lecteur h2 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--couleur-secondaire);
+    margin-bottom: 16px;
+}
+
+.lien-sommaire {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--couleur-texte);
+    padding: 10px 0;
+    font-size: 0.92rem;
+    border-bottom: 1px solid rgba(245, 241, 232, 0.05);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.lien-sommaire:hover { color: var(--couleur-accent); }
+
+.zone-lecture {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.barre-outils-lecteur {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px;
+    background-color: var(--couleur-surface);
+    border-bottom: 1px solid rgba(245, 241, 232, 0.08);
+    flex-shrink: 0;
+}
+
+.barre-outils-lecteur button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+.barre-outils-lecteur button:hover {
+    border-color: var(--couleur-accent);
+    color: var(--couleur-accent);
+}
+
+.indicateur-page {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--couleur-secondaire);
+    font-size: 0.9rem;
+}
+
+#champ-page-actuelle {
+    width: 56px;
+    padding: 6px 8px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+}
+
+.separateur-outils {
+    width: 1px;
+    height: 24px;
+    background: rgba(245, 241, 232, 0.12);
+}
+
+#pourcentage-zoom {
+    color: var(--couleur-secondaire);
+    font-size: 0.85rem;
+    min-width: 42px;
+    text-align: center;
+}
+
+.bouton-basculer-sommaire-mobile { display: none; }
+
+.zone-canvas {
+    flex-grow: 1;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    padding: 32px;
+    background-color: var(--couleur-fond);
+    touch-action: none; /* on gère nous-mêmes le pincement/balayage en mode page unique */
+}
+
+.zone-canvas.mode-continu {
+    touch-action: pan-y; /* laisse le défilement vertical natif faire son travail */
+    align-items: flex-start;
+}
+
+#canvas-pdf {
+    background-color: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    height: fit-content;
+    transform-origin: center center;
+}
+
+.conteneur-defilement-continu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    transform-origin: top center;
+}
+
+.page-continue {
+    background-color: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+}
+
+/* Barre d'outils : état actif pour les bascules (plein écran / mode continu) */
+.barre-outils-lecteur button.actif {
+    border-color: var(--couleur-accent);
+    color: var(--couleur-accent);
+    background-color: rgba(200, 169, 107, 0.1);
+}
+
+:fullscreen .zone-lecture,
+:-webkit-full-screen .zone-lecture {
+    background-color: var(--couleur-fond);
+}
+
+body.theme-clair .zone-canvas { background-color: #EDEAE3; }
+
+/* Journal technique (diagnostics visibles sans outils de développement) */
+.panneau-journal-technique {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 40vh;
+    background-color: var(--couleur-surface);
+    border-top: 1px solid rgba(245, 241, 232, 0.15);
+    z-index: 5000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.entete-journal-technique {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(245, 241, 232, 0.1);
+    color: var(--couleur-texte);
+    flex-shrink: 0;
+}
+
+.entete-journal-technique button {
+    background: none;
+    border: none;
+    color: var(--couleur-secondaire);
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+#contenu-journal-technique {
+    overflow-y: auto;
+    padding: 10px 16px;
+    font-family: Consolas, monospace;
+    font-size: 0.78rem;
+}
+
+.ligne-journal {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(245, 241, 232, 0.05);
+    color: var(--couleur-secondaire);
+    word-break: break-word;
+}
+
+.ligne-journal-error { color: #ff8080; }
+.ligne-journal-warn { color: #e0b25c; }
+
+/* Animation de chargement du lecteur PDF */
+.chargement-lecteur {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 40px;
+    margin: auto;
+    max-width: 320px;
+    text-align: center;
+}
+
+.icone-livre-anime {
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+
+.icone-livre-anime i {
+    font-size: 3.2rem;
+    color: var(--couleur-accent);
+    display: block;
+    animation: maktaba-livre-respire 1.8s ease-in-out infinite;
+}
+
+.icone-livre-anime .page-tournante {
+    position: absolute;
+    top: 6px;
+    right: 2px;
+    width: 16px;
+    height: 22px;
+    background: var(--couleur-fond);
+    border: 1px solid var(--couleur-accent);
+    border-radius: 0 4px 4px 0;
+    transform-origin: left center;
+    animation: maktaba-page-tourne 1.4s ease-in-out infinite;
+}
+
+@keyframes maktaba-livre-respire {
+    0%, 100% { transform: scale(1); opacity: 0.75; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes maktaba-page-tourne {
+    0%, 100% { transform: perspective(100px) rotateY(0deg); }
+    50% { transform: perspective(100px) rotateY(-150deg); }
+}
+
+.texte-chargement {
+    color: var(--couleur-secondaire);
+    font-size: 0.9rem;
+}
+
+.barre-chargement-lecteur {
+    width: 220px;
+}
+
+.chargement-lecteur.etat-erreur .icone-livre-anime,
+.chargement-lecteur.etat-erreur .barre-chargement-lecteur {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .icone-livre-anime i,
+    .icone-livre-anime .page-tournante {
+        animation: none;
+    }
+}

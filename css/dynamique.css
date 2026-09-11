@@ -1,0 +1,293 @@
+/* =========================================
+   MAKTABA — dynamique.css
+   Éléments ajoutés pour le contenu dynamique Supabase : badges, messages vides, progression de lecture, modération
+   ========================================= */
+
+   AJOUTS — CHARGEMENT DYNAMIQUE (Supabase)
+   ========================================= */
+.message-vide-inline {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--couleur-secondaire);
+}
+
+.message-vide-inline a {
+    color: var(--couleur-accent);
+    text-decoration: underline;
+}
+
+.compteur-collection {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--couleur-accent);
+    font-weight: 600;
+}
+
+.groupe-badges-categorie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.message-erreur-favori {
+    color: #d9534f;
+    font-size: 0.9rem;
+    margin-top: -8px;
+    margin-bottom: 24px;
+}
+
+/* Formulaire de contribution : select à l'intérieur d'un .input-avec-icone
+   et textarea autonome, avec le même habillage que les champs texte. */
+.input-avec-icone select {
+    width: 100%;
+    padding: 13px 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background-color: var(--couleur-surface);
+    color: var(--couleur-texte);
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+    appearance: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-avec-icone select:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(200, 169, 107, 0.1);
+}
+
+.champ-groupe textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background-color: transparent;
+    color: var(--couleur-texte);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.champ-groupe textarea:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(200, 169, 107, 0.1);
+}
+
+/* Cartes "Mes propositions" */
+.carte-contribution {
+    padding: 18px 20px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    margin-bottom: 14px;
+}
+
+.entete-contribution {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.entete-contribution h4 {
+    color: var(--couleur-texte);
+    font-size: 1.05rem;
+}
+
+.badge-statut-contribution {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    background: rgba(200, 169, 107, 0.12);
+    color: var(--couleur-accent);
+}
+
+.carte-contribution.statut-approuvee .badge-statut-contribution {
+    background: rgba(50, 180, 100, 0.12);
+    color: #4cc47a;
+}
+
+.carte-contribution.statut-rejetee .badge-statut-contribution {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff8080;
+}
+
+.auteur-contribution, .date-contribution {
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    margin-top: 6px;
+}
+
+.commentaire-moderateur {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: var(--couleur-texte);
+    background: rgba(245, 241, 232, 0.04);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.citation-source {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--couleur-accent);
+    background: rgba(200, 169, 107, 0.06);
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    font-style: italic;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.citation-source i {
+    color: var(--couleur-accent);
+    margin-top: 2px;
+}
+
+/* =========================================
+   MES LECTURES EN COURS (profil)
+   ========================================= */
+.grille-progression {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.carte-progression {
+    display: block;
+    padding: 18px 20px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    color: var(--couleur-texte);
+    transition: border-color 0.2s ease;
+}
+
+.carte-progression:hover {
+    border-color: var(--couleur-accent);
+}
+
+.entete-progression {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.entete-progression h4 {
+    font-size: 1.05rem;
+    color: var(--couleur-texte);
+}
+
+.pourcentage-progression {
+    font-weight: 700;
+    color: var(--couleur-accent);
+    white-space: nowrap;
+}
+
+.auteur-progression {
+    color: var(--couleur-secondaire);
+    font-size: 0.88rem;
+    margin-top: 4px;
+}
+
+.barre-progression-conteneur {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(245, 241, 232, 0.08);
+    margin-top: 14px;
+    overflow: hidden;
+}
+
+.barre-progression-remplissage {
+    height: 100%;
+    background: var(--couleur-accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.page-progression {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    color: var(--couleur-secondaire);
+}
+
+/* =========================================
+   MODÉRATION DES CONTRIBUTIONS
+   ========================================= */
+.filtres-moderation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.carte-moderation {
+    padding: 20px 22px;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.description-contribution {
+    margin-top: 10px;
+    color: var(--couleur-texte);
+    font-size: 0.9rem;
+}
+
+.lien-contribution {
+    margin-top: 6px;
+    font-size: 0.85rem;
+}
+
+.lien-contribution a {
+    color: var(--couleur-accent);
+    word-break: break-all;
+}
+
+.zone-moderation {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(245, 241, 232, 0.08);
+}
+
+.champ-commentaire-moderation {
+    width: 100%;
+    min-height: 70px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background: transparent;
+    color: var(--couleur-texte);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+    margin-bottom: 12px;
+}
+
+.champ-commentaire-moderation:focus {
+    outline: none;
+    border-color: var(--couleur-accent);
+}
+
+.actions-moderation {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.actions-moderation button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* =========================================

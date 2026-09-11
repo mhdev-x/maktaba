@@ -26,7 +26,9 @@ islamiques numériques — puis ouvert à la communauté comme sadaqa jariya.
 ```
 maktaba/
 ├── index.html              # Page d'accueil
-├── css/                    # Styles (style.css, responsive.css)
+├── css/                    # Styles, découpés par thème (base, navigation-hero,
+│                           # composants, pages, theme-clair, pages-secondaires,
+│                           # dynamique, lecteur) + responsive.css
 ├── js/                     # Scripts (un fichier par page + data.js partagé)
 │   └── vendor/pdfjs/       # PDF.js hébergé localement
 ├── pages/                  # Toutes les autres pages du site

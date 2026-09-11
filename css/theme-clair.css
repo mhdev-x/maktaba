@@ -1,0 +1,168 @@
+/* =========================================
+   MAKTABA — theme-clair.css
+   Surcharges du thème clair (mode jour)
+   ========================================= */
+
+   11. 🌙 / ☀️ THÈME CLAIR (LIGHT MODE PREMIUM)
+   ========================================================================== */
+
+/* --- NOUVELLE PALETTE DE COULEURS --- */
+body.theme-clair {
+    --couleur-fond: #F9F8F5;       
+    --couleur-surface: #FFFFFF;    
+    --couleur-texte: #2A2621;      
+    --couleur-secondaire: #756D60; 
+    --couleur-accent: #B88B42;     
+    background-color: var(--couleur-fond);
+    color: var(--couleur-texte);
+}
+
+/* --- BORDURES ET STRUCTURE --- */
+body.theme-clair .en-tete,
+body.theme-clair .pied-page,
+body.theme-clair .carte-collection,
+body.theme-clair .carte-livre,
+body.theme-clair .carte-auteur,
+body.theme-clair .champ-recherche,
+body.theme-clair .meta-donnees-livre .donnee,
+body.theme-clair .auth-conteneur-split,
+body.theme-clair .onglets-auth-segment,
+body.theme-clair .champ-groupe input {
+    border-color: rgba(42, 38, 33, 0.08);
+}
+
+/* --- NAVBAR (Verre dépoli) --- */
+body.theme-clair .en-tete {
+    background-color: rgba(249, 248, 245, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(42, 38, 33, 0.05);
+}
+
+body.theme-clair .bouton-recherche,
+body.theme-clair .bouton-connexion,
+body.theme-clair .bouton-menu,
+body.theme-clair .bouton-secondaire {
+    border-color: rgba(42, 38, 33, 0.15);
+    background-color: #FFFFFF;
+    color: var(--couleur-texte);
+}
+
+body.theme-clair .bouton-recherche:hover,
+body.theme-clair .bouton-connexion:hover,
+body.theme-clair .bouton-secondaire:hover {
+    border-color: var(--couleur-accent);
+    color: var(--couleur-accent);
+    background-color: rgba(184, 139, 66, 0.03); 
+}
+
+/* --- OMBRES DOUCES (Cartes) --- */
+body.theme-clair .carte-collection,
+body.theme-clair .carte-livre,
+body.theme-clair .carte-auteur {
+    box-shadow: 0 4px 15px rgba(42, 38, 33, 0.03); 
+}
+
+body.theme-clair .carte-collection:hover,
+body.theme-clair .carte-livre:hover {
+    box-shadow: 0 15px 35px rgba(184, 139, 66, 0.12);
+    border-color: rgba(184, 139, 66, 0.3);
+    background-color: #FFFFFF !important;
+}
+
+body.theme-clair .carte-auteur:hover {
+    background-color: #F3EFE6 !important; 
+    border-color: rgba(184, 139, 66, 0.45) !important;
+    box-shadow: 0 14px 30px rgba(184, 139, 66, 0.12);
+}
+
+/* --- TEXTES AU SURVOL (Auteurs) --- */
+body.theme-clair .carte-auteur:hover .nom-auteur { color: #2A2621 !important; }
+body.theme-clair .carte-auteur:hover .nom-arabe-auteur { color: #B88B42 !important; }
+body.theme-clair .carte-auteur:hover .epoque-auteur { color: #5F574C !important; }
+body.theme-clair .carte-auteur:hover .nombre-ouvrages {
+    color: #2A2621 !important;
+    background-color: rgba(184, 139, 66, 0.10) !important;
+    border-color: rgba(184, 139, 66, 0.25) !important;
+}
+body.theme-clair .carte-auteur:hover .avatar-auteur {
+    background-color: rgba(184, 139, 66, 0.16) !important;
+    border-color: rgba(184, 139, 66, 0.35) !important;
+    color: #B88B42 !important;
+}
+
+/* --- VISUELS LIVRES (Effet papier) --- */
+body.theme-clair .visuel-carte-livre,
+body.theme-clair .grande-couverture,
+body.theme-clair .couverture-livre {
+    background: linear-gradient(135deg, #F2EFE9 0%, #E8E4D8 100%);
+    border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+body.theme-clair .carte-livre-hero,
+body.theme-clair .grande-couverture {
+    box-shadow: 0 20px 40px rgba(42, 38, 33, 0.08); 
+}
+
+/* --- BOUTONS PRINCIPAUX ET TAGS --- */
+body.theme-clair .bouton-principal,
+body.theme-clair .bouton-filtre.actif {
+    background-color: var(--couleur-accent);
+    color: #FFFFFF !important;
+    border-color: var(--couleur-accent);
+    box-shadow: 0 4px 12px rgba(184, 139, 66, 0.3); 
+}
+
+body.theme-clair .bouton-principal:hover {
+    background-color: #A37A38;
+    box-shadow: 0 6px 18px rgba(184, 139, 66, 0.4);
+}
+
+body.theme-clair .badge-categorie {
+    background-color: rgba(184, 139, 66, 0.1);
+    color: var(--couleur-texte);
+    border-color: rgba(184, 139, 66, 0.2);
+}
+
+body.theme-clair .etiquette-livre {
+    background-color: rgba(42, 38, 33, 0.04);
+}
+
+body.theme-clair .nombre-ouvrages {
+    background-color: #F9F8F5;
+}
+
+/* --- CHAMPS RECHERCHE & FILTRES --- */
+body.theme-clair .champ-recherche {
+    box-shadow: inset 0 2px 4px rgba(42, 38, 33, 0.02);
+    background-color: #FFFFFF;
+    color: #2A2621;
+}
+
+body.theme-clair .champ-recherche:focus,
+body.theme-clair .champ-groupe input:focus {
+    box-shadow: 0 0 0 4px rgba(184, 139, 66, 0.15); 
+    border-color: var(--couleur-accent);
+}
+
+body.theme-clair .bouton-filtre { color: #756D60; }
+body.theme-clair .bouton-filtre:hover { color: #2A2621; border-color: rgba(184, 139, 66, 0.35); }
+
+/* --- ICONES & TEXTES SPÉCIFIQUES --- */
+body.theme-clair .icone-recherche { color: var(--couleur-secondaire); }
+body.theme-clair .fil-ariane i { color: rgba(42, 38, 33, 0.2); }
+body.theme-clair .citation-hero { border-left-color: var(--couleur-accent); }
+body.theme-clair .citation-texte { font-weight: 500; }
+body.theme-clair .btn-favori { background-color: #FFFFFF; color: #2A2621; }
+
+/* --- PIED DE PAGE --- */
+body.theme-clair .pied-page {
+    background-color: #F2EFE9;
+    border-top: none;
+}
+body.theme-clair .badge-opensource {
+    background-color: rgba(184, 139, 66, 0.08);
+    border-color: rgba(184, 139, 66, 0.2);
+}
+
+/* =========================================

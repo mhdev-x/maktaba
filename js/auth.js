@@ -351,5 +351,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // ==========================================
+    // 🔗 CONNEXION VIA GOOGLE / GITHUB (OAuth)
+    // ==========================================
+    let boutonGoogle = document.getElementById("bouton-connexion-google");
+    let boutonGithub = document.getElementById("bouton-connexion-github");
+
+    async function connecterAvecFournisseur(fournisseur) {
+        if (!supabaseClient) {
+            afficherMessage(messageConnexion, "Service indisponible pour le moment. Réessayez plus tard.", "erreur");
+            return;
+        }
+        cacherMessages();
+        try {
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: fournisseur,
+                options: { redirectTo: new URL("../index.html", window.location.href).href },
+            });
+            // En cas de succès, Supabase redirige immédiatement vers la page de connexion
+            // du fournisseur : il n'y a rien d'autre à faire ici. On n'affiche un message
+            // que si la requête elle-même échoue (fournisseur non activé, etc.).
+            if (error) {
+                afficherMessage(messageConnexion, traduireErreur(error), "erreur");
+            }
+        } catch (erreur) {
+            afficherMessage(messageConnexion, traduireErreur(erreur), "erreur");
+        }
+    }
+
+    if (boutonGoogle) {
+        boutonGoogle.addEventListener("click", () => connecterAvecFournisseur("google"));
+    }
+    if (boutonGithub) {
+        boutonGithub.addEventListener("click", () => connecterAvecFournisseur("github"));
+    }
+
     verifierSessionActive();
 });

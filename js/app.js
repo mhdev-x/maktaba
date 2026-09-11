@@ -100,7 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (utilisateurConnecte) {
-            let nomComplet = utilisateurConnecte.user_metadata?.nom_complet || "Mon profil";
+            let meta = utilisateurConnecte.user_metadata || {};
+            let nomComplet = meta.nom_complet || meta.full_name || meta.name || meta.user_name || "Mon profil";
             let premierPrenom = nomComplet.split(" ")[0];
 
             // --- Desktop ---

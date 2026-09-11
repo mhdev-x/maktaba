@@ -1,0 +1,73 @@
+/* =========================================
+   MAKTABA — base.css
+   Variables de couleurs/polices, réinitialisation CSS de base
+   ========================================= */
+
+/* ==========================================================================
+   📚 MAKTABA — FEUILLE DE STYLE PRINCIPALE (STYLE.CSS)
+   ========================================================================== */
+
+/* =========================================
+   1. VARIABLES & POLICES
+   ========================================= */
+:root {
+    --couleur-fond: #0d0d0d;
+    --couleur-surface: #151515;
+    --couleur-texte: #f5f1e8;
+    --couleur-secondaire: #a9a49a;
+    --couleur-accent: #c8a96b;
+}
+
+@font-face {
+    font-family: "Salma Arabic";
+    src: url("../assets/fonts/SalmaArabic-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* =========================================
+   2. RÉINITIALISATION & BASE
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* L'attribut HTML "hidden" doit toujours l'emporter, même sur un élément
+   dont une classe définit son propre "display" (ex: display: flex).
+   Sans cette règle, un élément masqué via JS (element.hidden = true)
+   peut rester visible si une autre règle CSS lui impose un display. */
+[hidden] {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--couleur-fond);
+    color: var(--couleur-texte);
+    font-family: Arial, sans-serif;
+}
+
+/* Transitions globales pour le Dark/Light mode fluide */
+body,
+.en-tete,
+.carte-collection,
+.carte-livre,
+.carte-auteur,
+.pied-page,
+.visuel-carte-livre,
+.grande-couverture,
+.champ-recherche,
+.bouton-filtre,
+.donnee,
+.meta-donnees-livre .donnee,
+h1, h2, h3, p, span, a, i, button, .badge-categorie,
+.auth-conteneur-split, .onglets-auth-segment, .onglet-segment, .champ-groupe input, .input-avec-icone input {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, fill 0.4s ease;
+}
+
+/* =========================================

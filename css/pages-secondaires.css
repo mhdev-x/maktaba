@@ -1,0 +1,331 @@
+/* =========================================
+   MAKTABA — pages-secondaires.css
+   Page à propos, page collections, page profil auteur
+   ========================================= */
+
+   PAGE À PROPOS
+   ========================================= */
+.section-a-propos {
+    width: 100%;
+    padding: 60px 0 100px 0;
+}
+
+.conteneur-a-propos {
+    width: min(800px, 92%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.bloc-texte-propos {
+    background-color: var(--couleur-surface);
+    border: 1px solid rgba(245, 241, 232, 0.05);
+    border-radius: 16px;
+    padding: 40px;
+}
+
+.icone-propos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: rgba(200, 169, 107, 0.1);
+    color: var(--couleur-accent);
+    border-radius: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.bloc-texte-propos h2 {
+    font-size: 1.6rem;
+    color: var(--couleur-texte);
+    margin-bottom: 16px;
+}
+
+.bloc-texte-propos p {
+    color: var(--couleur-secondaire);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 16px;
+}
+
+.bloc-texte-propos strong {
+    color: var(--couleur-texte);
+}
+
+.liste-engagements {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.liste-engagements li {
+    position: relative;
+    padding-left: 20px;
+    color: var(--couleur-secondaire);
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.liste-engagements li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--couleur-accent);
+    font-weight: bold;
+}
+
+.actions-propos {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+/* =========================================
+   PAGE COLLECTIONS (categories.html)
+   ========================================= */
+
+.section-page-collections {
+    width: 100%;
+    padding: 40px 0 90px 0;
+}
+
+.conteneur-page-collections {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+}
+
+/* Intro courte sous le titre de page */
+.intro-collections {
+    max-width: 720px;
+    margin: 0 0 36px 0;
+    color: var(--couleur-secondaire);
+    font-size: 1.02rem;
+    line-height: 1.75;
+}
+
+/* Grille de la page Collections */
+.grille-page-collections {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+/* Carte collection (page dédiée) */
+.carte-page-collection {
+    position: relative;
+    min-height: 250px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid rgba(245, 241, 232, 0.1);
+    border-radius: 14px;
+    background-color: var(--couleur-surface);
+    color: var(--couleur-texte);
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+        transform 0.35s ease,
+        border-color 0.35s ease,
+        background-color 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.carte-page-collection:hover {
+    transform: translateY(-6px);
+    border-color: rgba(200, 169, 107, 0.45);
+    background-color: #191919;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+}
+
+.carte-page-collection .numero-collection {
+    color: var(--couleur-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.carte-page-collection .contenu-collection > i {
+    margin-bottom: 16px;
+    color: var(--couleur-accent);
+    font-size: 1.35rem;
+}
+
+.carte-page-collection .contenu-collection h3 {
+    margin-bottom: 10px;
+    font-size: 1.45rem;
+    color: var(--couleur-texte);
+}
+
+.carte-page-collection .contenu-collection p {
+    color: var(--couleur-secondaire);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    max-width: 28ch;
+}
+
+.carte-page-collection .fleche-collection {
+    position: absolute;
+    right: 28px;
+    bottom: 28px;
+    color: var(--couleur-secondaire);
+    font-size: 0.9rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.carte-page-collection:hover .fleche-collection {
+    transform: translateX(5px);
+    color: var(--couleur-accent);
+}
+
+/* Petit badge optionnel (ex: nb ouvrages) */
+.badge-collection-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--couleur-secondaire);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(245, 241, 232, 0.06);
+}
+
+.badge-collection-meta i {
+    color: var(--couleur-accent);
+    font-size: 0.7rem;
+}
+
+/* Light mode de "À propos" */
+body.theme-clair .bloc-texte-propos {
+    background-color: #FFFFFF;
+    border-color: rgba(42, 38, 33, 0.08);
+    box-shadow: 0 10px 30px rgba(42, 38, 33, 0.03);
+}
+
+/* --- PAGE PROFIL AUTEUR (LIGHT MODE) --- */
+body.theme-clair .section-profil-auteur { border-color: rgba(42, 38, 33, 0.08); }
+body.theme-clair .avatar-grand { background-color: rgba(184, 139, 66, 0.1); border-color: rgba(184, 139, 66, 0.2); }
+body.theme-clair .nom-francais-grand { color: #2A2621; }
+body.theme-clair .nom-arabe-grand { color: #B88B42; }
+body.theme-clair .epoque-grand { background: rgba(42, 38, 33, 0.03); border-color: rgba(42, 38, 33, 0.08); color: #756D60; }
+body.theme-clair .bio-auteur { color: #756D60; }
+
+@media (max-width: 600px) {
+    .bloc-texte-propos {
+        padding: 30px 20px;
+    }
+}
+
+/* --- PAGE COLLECTIONS (LIGHT MODE) --- */
+body.theme-clair .carte-page-collection {
+    background-color: #FFFFFF;
+    border-color: rgba(42, 38, 33, 0.08);
+    box-shadow: 0 4px 15px rgba(42, 38, 33, 0.03);
+}
+
+body.theme-clair .carte-page-collection:hover {
+    background-color: #F7F4EE !important;
+    border-color: rgba(184, 139, 66, 0.4) !important;
+    box-shadow: 0 14px 30px rgba(184, 139, 66, 0.12);
+}
+
+body.theme-clair .carte-page-collection:hover .contenu-collection h3 {
+    color: #2A2621 !important;
+}
+
+body.theme-clair .carte-page-collection:hover .contenu-collection p {
+    color: #5F574C !important;
+}
+
+body.theme-clair .badge-collection-meta {
+    background: rgba(42, 38, 33, 0.03);
+    border-color: rgba(42, 38, 33, 0.08);
+    color: #5F574C;
+}
+
+/* =========================================
+   10b. PAGE PROFIL AUTEUR (auteur.html)
+   ========================================= */
+.section-profil-auteur {
+    width: 100%;
+    padding: 30px 0 60px 0;
+    border-bottom: 1px solid rgba(245, 241, 232, 0.05);
+}
+
+.conteneur-profil-auteur {
+    width: min(900px, 92%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.avatar-grand {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 169, 107, 0.08);
+    border: 1px solid rgba(200, 169, 107, 0.2);
+    color: var(--couleur-accent);
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+}
+
+.nom-arabe-grand {
+    font-family: "Salma Arabic", serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--couleur-accent);
+    margin-bottom: 8px;
+    font-weight: normal;
+}
+
+.nom-francais-grand {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    color: var(--couleur-texte);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}
+
+.epoque-grand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(245, 241, 232, 0.03);
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    color: var(--couleur-secondaire);
+    font-size: 0.95rem;
+    margin-bottom: 36px;
+}
+
+.epoque-grand i {
+    color: var(--couleur-accent);
+}
+
+.bio-auteur {
+    color: var(--couleur-secondaire);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.bio-auteur p {
+    margin-bottom: 16px;
+}
+
+.section-oeuvres-auteur {
+    width: 100%;
+    padding: 60px 0 100px 0;
+}
+/* =========================================
