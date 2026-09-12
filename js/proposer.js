@@ -1,6 +1,5 @@
-// ==========================================================================
 // MAKTABA — PROPOSER UN OUVRAGE (formulaire de contribution)
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let blocNonConnecte = document.getElementById("bloc-non-connecte");
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (blocFormulaire) blocFormulaire.hidden = false;
     if (blocMesContributions) blocMesContributions.hidden = false;
 
-    // --- Remplir la liste des catégories ---
     if (selectCategorie) {
         let categories = await chargerCategories();
         categories.forEach(cat => {
@@ -66,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await rafraichirMesContributions();
 
-    // --- Soumission du formulaire ---
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();

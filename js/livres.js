@@ -1,6 +1,5 @@
-// ==========================================================================
 // MAKTABA — PAGE BIBLIOTHÈQUE (chargement Supabase + Recherche + Filtres)
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let champRecherche = document.getElementById("champ-recherche");
@@ -72,9 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // ==========================================
-    // CHARGEMENT DES LIVRES DEPUIS SUPABASE
-    // ==========================================
+// CHARGEMENT DES LIVRES DEPUIS SUPABASE
+
     if (!grilleCatalogue) return;
 
     let livres = await chargerLivres();
@@ -94,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     grilleCatalogue.innerHTML = livres.map(maktabaCarteLivreHTML).join("");
 
-    // Applique le filtre catégorie éventuellement présent dans l'URL (?categorie=...)
     let parametres = new URLSearchParams(window.location.search);
     let categorieUrl = parametres.get("categorie");
 

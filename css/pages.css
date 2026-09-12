@@ -1,7 +1,7 @@
 /* =========================================
    MAKTABA — pages.css
    Page livre (détails), page connexion (split screen), pied de page
-   ========================================= 
+   ========================================= */
 
    8. PAGE LIVRE (Détails)
    ========================================= */
@@ -438,8 +438,6 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* 🔧 FIX CRITIQUE : force le masquage réel quand l'attribut hidden est présent
-   (empêche l'empilement des deux formulaires) */
 .formulaire-auth[hidden] {
     display: none !important;
 }

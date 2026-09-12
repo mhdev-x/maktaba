@@ -1,9 +1,6 @@
-// ==========================================================================
 // MAKTABA — COUCHE D'ACCÈS AUX DONNÉES (Supabase)
-// À charger APRÈS supabase-client.js et AVANT les scripts propres à chaque page.
-// ==========================================================================
 
-// Préfixe de chemin : "" si on est déjà dans /pages/, sinon "pages/" (depuis la racine)
+
 let MAKTABA_BASE_PAGES = window.location.pathname.includes("/pages/") ? "" : "pages/";
 
 function maktabaLabelLangue(valeur) {
@@ -12,8 +9,6 @@ function maktabaLabelLangue(valeur) {
     return valeur.split(" ").filter(Boolean).map(p => libelles[p] || p).join(" / ");
 }
 
-// Retourne la métadonnée secondaire la plus pertinente pour une carte de livre
-// (pages, volumes ou nombre de hadiths — un seul à la fois, selon ce qui est renseigné)
 function maktabaMetaSecondaire(livre) {
     if (livre.nb_hadiths) return `<i class="fa-solid fa-file-lines"></i> ${livre.nb_hadiths} hadiths`;
     if (livre.nb_volumes) return `<i class="fa-solid fa-layer-group"></i> ${livre.nb_volumes} volume${livre.nb_volumes > 1 ? "s" : ""}`;
@@ -21,17 +16,14 @@ function maktabaMetaSecondaire(livre) {
     return "";
 }
 
-// Un livre peut appartenir à plusieurs catégories (relation livres_categories).
-// Cette fonction aplatit la relation imbriquée renvoyée par Supabase en un tableau simple.
 function maktabaCategoriesDe(livre) {
     return (livre.livres_categories || [])
         .map(lc => lc.categories)
         .filter(Boolean);
 }
 
-// ==========================================
 // LECTURE — CATÉGORIES
-// ==========================================
+
 
 async function chargerCategories() {
     if (!supabaseClient) return [];
@@ -46,7 +38,6 @@ async function chargerCategories() {
     return data || [];
 }
 
-// Compte le nombre de livres par catégorie (relation many-to-many).
 async function compterLivresParCategorie() {
     if (!supabaseClient) return {};
 
@@ -67,9 +58,8 @@ async function compterLivresParCategorie() {
     return compteurs;
 }
 
-// ==========================================
 // LECTURE — LIVRES
-// ==========================================
+
 
 const SELECTION_LIVRE = `
     id, slug, titre, titre_arabe, description, langue, langue_originale,
@@ -80,7 +70,6 @@ const SELECTION_LIVRE = `
     fichiers_livres(type, url, est_public)
 `;
 
-// Charge la liste des livres (avec auteur + catégories), triés du plus récent au plus ancien.
 async function chargerLivres(options = {}) {
     if (!supabaseClient) return [];
 
@@ -99,7 +88,6 @@ async function chargerLivres(options = {}) {
     return data || [];
 }
 
-// Charge un livre précis (fiche détaillée) via son slug.
 async function chargerLivreParSlug(slug) {
     if (!supabaseClient || !slug) return null;
 
@@ -116,11 +104,9 @@ async function chargerLivreParSlug(slug) {
     return data;
 }
 
-// ==========================================
 // LECTURE — AUTEURS
-// ==========================================
 
-// Charge la liste des auteurs avec leur nombre d'ouvrages (calculé, jamais désynchronisé).
+
 async function chargerAuteurs() {
     if (!supabaseClient) return [];
 
@@ -136,7 +122,6 @@ async function chargerAuteurs() {
     return data || [];
 }
 
-// Charge un auteur précis (fiche + liste de ses ouvrages) via son slug.
 async function chargerAuteurParSlug(slug) {
     if (!supabaseClient || !slug) return null;
 
@@ -157,9 +142,8 @@ function maktabaNbOuvrages(auteur) {
     return auteur?.livres?.[0]?.count ?? (Array.isArray(auteur?.livres) ? auteur.livres.length : 0);
 }
 
-// ==========================================
-// FAVORIS (nécessite une session active — RLS impose auth.uid() = utilisateur_id)
-// ==========================================
+// FAVORIS
+
 
 async function estFavori(livreId, utilisateurId) {
     if (!supabaseClient || !utilisateurId) return false;
@@ -202,7 +186,6 @@ async function retirerFavori(livreId, utilisateurId) {
     return true;
 }
 
-// Charge les livres favoris d'un utilisateur (mêmes champs qu'une carte-livre classique).
 async function chargerFavorisUtilisateur(utilisateurId) {
     if (!supabaseClient || !utilisateurId) return [];
 
@@ -219,7 +202,6 @@ async function chargerFavorisUtilisateur(utilisateurId) {
     return (data || []).map(ligne => ligne.livres).filter(Boolean);
 }
 
-// Charge les lectures en cours d'un utilisateur (progression_lecture + infos du livre).
 async function chargerLectureEnCours(utilisateurId) {
     if (!supabaseClient || !utilisateurId) return [];
 
@@ -258,11 +240,9 @@ function maktabaCarteProgressionHTML(item) {
     `;
 }
 
-// ==========================================
-// CONTRIBUTIONS (proposition d'ouvrages)
-// ==========================================
+// CONTRIBUTIONS
 
-// Envoie une proposition d'ouvrage. RLS impose auth.uid() = utilisateur_id.
+
 async function proposerContribution(utilisateurId, proposition) {
     if (!supabaseClient || !utilisateurId) return { succes: false };
 
@@ -282,7 +262,6 @@ async function proposerContribution(utilisateurId, proposition) {
     return { succes: true };
 }
 
-// Charge les contributions de l'utilisateur connecté, les plus récentes en premier.
 async function chargerMesContributions(utilisateurId) {
     if (!supabaseClient || !utilisateurId) return [];
 
@@ -328,11 +307,9 @@ function maktabaCarteContributionHTML(contribution) {
     `;
 }
 
-// ==========================================
-// MODÉRATION DES CONTRIBUTIONS (réservé aux rôles moderateur/admin — RLS)
-// ==========================================
+// MODÉRATION DES CONTRIBUTIONS
 
-// Renvoie le profil (dont le rôle) de l'utilisateur connecté.
+
 async function chargerMonProfil(utilisateurId) {
     if (!supabaseClient || !utilisateurId) return null;
 
@@ -349,8 +326,6 @@ async function chargerMonProfil(utilisateurId) {
     return data;
 }
 
-// Charge toutes les contributions (visible uniquement aux modérateurs/admins
-// via RLS), avec le nom de leur auteur, optionnellement filtrées par statut.
 async function chargerToutesLesContributions(statutFiltre) {
     if (!supabaseClient) return [];
 
@@ -375,7 +350,6 @@ async function chargerToutesLesContributions(statutFiltre) {
     return data || [];
 }
 
-// Applique une décision de modération (RLS réserve cette action aux modérateurs/admins).
 async function traiterContribution(contributionId, statut, commentaire, moderateurId) {
     if (!supabaseClient) return false;
 
@@ -430,13 +404,9 @@ function maktabaCarteModerationHTML(contribution) {
     `;
 }
 
-// ==========================================
-// FICHIERS (Storage) — génère une URL de lecture pour un fichier de livre
-// ==========================================
+// FICHIERS (STORAGE)
 
-// "livres"/"audio" sont des buckets privés : il faut une URL signée (temporaire).
-// Seuls les visiteurs connectés peuvent en obtenir une pour un fichier non public
-// (appliqué par les policies RLS sur storage.objects).
+
 async function obtenirUrlFichier(fichier) {
     if (!supabaseClient || !fichier) return null;
     let bucket = fichier.type === "audio" ? "audio" : "livres";
@@ -448,7 +418,7 @@ async function obtenirUrlFichier(fichier) {
 
     const { data, error } = await supabaseClient.storage
         .from(bucket)
-        .createSignedUrl(fichier.url, 3600); // valable 1h
+        .createSignedUrl(fichier.url, 3600);
 
     if (error) {
         console.error("Maktaba : erreur de génération du lien de lecture.", error);
@@ -457,9 +427,8 @@ async function obtenirUrlFichier(fichier) {
     return data?.signedUrl || null;
 }
 
-// ==========================================
 // PROGRESSION DE LECTURE
-// ==========================================
+
 
 async function chargerProgression(livreId, utilisateurId) {
     if (!supabaseClient || !utilisateurId) return null;
@@ -501,9 +470,8 @@ async function enregistrerProgression(livreId, utilisateurId, pageActuelle, page
     return true;
 }
 
-// ==========================================
-// GABARITS HTML (mêmes classes CSS que l'existant, donc aucun style à retoucher)
-// ==========================================
+// GABARITS HTML
+
 
 function maktabaCarteLivreHTML(livre) {
     let nomAuteur = livre.auteurs?.nom_complet || "Auteur inconnu";

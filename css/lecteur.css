@@ -1,7 +1,7 @@
 /* =========================================
    MAKTABA — lecteur.css
    Lecteur PDF intégré (barre d'outils, sommaire, journal technique, défilement continu)
-   =========================================
+   ========================================= */
 
    LECTEUR PDF INTÉGRÉ
    ========================================= */
@@ -48,7 +48,7 @@ body.page-lecteur {
 .conteneur-lecteur {
     display: flex;
     flex-grow: 1;
-    min-height: 0; /* nécessaire pour que les enfants en scroll fonctionnent en flexbox */
+    min-height: 0;
 }
 
 .sommaire-lecteur {
@@ -156,11 +156,11 @@ body.page-lecteur {
     justify-content: center;
     padding: 32px;
     background-color: var(--couleur-fond);
-    touch-action: none; /* on gère nous-mêmes le pincement/balayage en mode page unique */
+    touch-action: none;
 }
 
 .zone-canvas.mode-continu {
-    touch-action: pan-y; /* laisse le défilement vertical natif faire son travail */
+    touch-action: pan-y;
     align-items: flex-start;
 }
 

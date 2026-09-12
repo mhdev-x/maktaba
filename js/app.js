@@ -1,6 +1,5 @@
-// ==========================================================================
 // MAKTABA — SCRIPT GLOBAL (app.js)
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -69,20 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // 4. 🔐 GESTION DE L'ÉTAT DE CONNEXION (NAVBAR)
+    // 4. GESTION DE L'ÉTAT DE CONNEXION (NAVBAR)
     // ==========================================
     let inPagesFolder = window.location.pathname.includes('/pages/');
     let cheminConnexion = inPagesFolder ? "connexion.html" : "pages/connexion.html";
     let cheminProfil = inPagesFolder ? "profil.html" : "pages/profil.html";
 
-    // Éléments desktop
+    // Desktop
     let menuCompte = document.getElementById("menu-compte");
     let boutonCompte = document.getElementById("bouton-compte");
     let dropdownCompte = document.getElementById("dropdown-compte");
     let lienMonProfil = document.getElementById("lien-mon-profil");
     let boutonDeconnexion = document.getElementById("bouton-deconnexion");
 
-    // Élément mobile
+    // Mobile
     let compteMobile = document.getElementById("compte-mobile");
 
     async function gererEtatConnexion() {
@@ -94,8 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (error) throw error;
             utilisateurConnecte = data.session ? data.session.user : null;
         } catch (erreur) {
-            // Pas de session récupérable (réseau, token invalide, etc.) :
-            // on affiche simplement l'état "déconnecté" plutôt que de casser la page.
             console.error("Maktaba : impossible de récupérer la session.", erreur);
         }
 
@@ -104,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let nomComplet = meta.nom_complet || meta.full_name || meta.name || meta.user_name || "Mon profil";
             let premierPrenom = nomComplet.split(" ")[0];
 
-            // --- Desktop ---
+            // Desktop
             if (boutonCompte) {
                 boutonCompte.innerHTML = `
                     <i class="fa-solid fa-circle-user"></i>
@@ -116,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 lienMonProfil.setAttribute("href", cheminProfil);
             }
 
-            // --- Mobile ---
+            // Mobile
             if (compteMobile) {
                 compteMobile.innerHTML = `
                     <a href="${cheminProfil}" class="bouton-connexion bouton-connecte">
@@ -136,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         } else {
-            // --- Desktop : état déconnecté ---
+            // Desktop
             if (boutonCompte) {
                 boutonCompte.innerHTML = `
                     <i class="fa-solid fa-user"></i>
@@ -145,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 boutonCompte.classList.remove("bouton-connecte");
             }
 
-            // --- Mobile : état déconnecté ---
+            // Mobile
             if (compteMobile) {
                 compteMobile.innerHTML = `
                     <a href="${cheminConnexion}" class="bouton-connexion" id="bouton-compte-mobile">
@@ -158,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 5. 🖱️ OUVERTURE / FERMETURE DU DROPDOWN (DESKTOP)
+    // 5. OUVERTURE / FERMETURE DU DROPDOWN (DESKTOP)
     // ==========================================
     if (boutonCompte && dropdownCompte) {
         boutonCompte.addEventListener("click", async (e) => {
@@ -175,19 +172,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Maktaba : erreur lors de la vérification de session.", erreur);
             }
 
-            // Si non connecté : le bouton agit comme un simple lien vers connexion.html
             if (!session) {
                 window.location.href = cheminConnexion;
                 return;
             }
 
-            // Si connecté : on ouvre/ferme le menu déroulant
             let estOuvert = !dropdownCompte.hidden;
             dropdownCompte.hidden = estOuvert;
             boutonCompte.setAttribute("aria-expanded", !estOuvert);
         });
 
-        // Fermer le dropdown si on clique en dehors
         document.addEventListener("click", (e) => {
             if (menuCompte && !menuCompte.contains(e.target)) {
                 dropdownCompte.hidden = true;
@@ -197,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 6. 🚪 DÉCONNEXION
+    // 6. DÉCONNEXION
     // ==========================================
     async function deconnecterUtilisateur() {
         try {

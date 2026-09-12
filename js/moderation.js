@@ -1,9 +1,5 @@
-// ==========================================================================
 // MAKTABA — TABLEAU DE MODÉRATION DES CONTRIBUTIONS
-// Réservé aux profils role = moderateur | admin (appliqué aussi par RLS
-// côté serveur : même en contournant cette page, une requête depuis un
-// compte non autorisé serait refusée par Supabase).
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let blocAccesRefuse = document.getElementById("bloc-acces-refuse");
@@ -55,8 +51,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // Délégation d'événements : la liste est régénérée à chaque filtre,
-    // donc on écoute sur le conteneur parent plutôt que sur chaque bouton.
     listeModeration.addEventListener("click", async (e) => {
         let boutonApprouver = e.target.closest(".bouton-approuver");
         let boutonRejeter = e.target.closest(".bouton-rejeter");

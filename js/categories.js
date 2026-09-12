@@ -1,6 +1,5 @@
-// ==========================================================================
 // MAKTABA — PAGE COLLECTIONS (compteurs dynamiques par catégorie)
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let compteurs = await compterLivresParCategorie();

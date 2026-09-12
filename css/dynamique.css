@@ -1,7 +1,7 @@
 /* =========================================
    MAKTABA — dynamique.css
    Éléments ajoutés pour le contenu dynamique Supabase : badges, messages vides, progression de lecture, modération
-   =========================================
+   ========================================= */
 
    AJOUTS — CHARGEMENT DYNAMIQUE (Supabase)
    ========================================= */
@@ -39,8 +39,6 @@
     margin-bottom: 24px;
 }
 
-/* Formulaire de contribution : select à l'intérieur d'un .input-avec-icone
-   et textarea autonome, avec le même habillage que les champs texte. */
 .input-avec-icone select {
     width: 100%;
     padding: 13px 44px;

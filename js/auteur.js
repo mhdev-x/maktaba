@@ -1,6 +1,4 @@
-// ==========================================================================
-// MAKTABA — FICHE AUTEUR (chargée dynamiquement via ?slug=...)
-// ==========================================================================
+// MAKTABA — FICHE AUTEUR (chargée dynamiquement via ?slug=nom-de-l-auteur)
 
 document.addEventListener("DOMContentLoaded", async () => {
     let parametres = new URLSearchParams(window.location.search);

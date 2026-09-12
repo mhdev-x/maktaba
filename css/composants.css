@@ -3,7 +3,8 @@
    En-têtes de page génériques, cartes (collections/livres/auteurs), outils de la page bibliothèque
    ========================================= */
 
-/* 5. EN-TÊTES DE SECTIONS & PAGES */
+   5. EN-TÊTES DE SECTIONS & PAGES
+   ========================================= */
 .en-tete-section {
     display: flex;
     align-items: flex-end;

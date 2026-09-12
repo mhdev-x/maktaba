@@ -1,10 +1,8 @@
-// ==========================================================================
 // MAKTABA — ACCUEIL (livre à la une + sélection + grands auteurs, via Supabase)
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // --- Livre à la une (hero) ---
-    let vedette = await chargerLivreParSlug("aqida-ahl-sounnah-wal-Jamaah");
+    let vedette = await chargerLivreParSlug("riyad-as-salihin");
     if (vedette) {
         let elArabe = document.getElementById("hero-arabe");
         let elTitre = document.getElementById("hero-titre");
@@ -20,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             `<i class="fa-solid fa-language"></i> ${maktabaLabelLangue(vedette.langue)}`;
     }
 
-    // --- Sélection de livres ---
     let grilleLivres = document.getElementById("grille-livres-vedette");
     if (grilleLivres) {
         let livres = await chargerLivres({ limite: 4 });
@@ -29,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             : `<p class="message-vide-inline">Aucun ouvrage pour le moment.</p>`;
     }
 
-    // --- Grands auteurs (les 4 avec le plus d'ouvrages) ---
     let grilleAuteurs = document.getElementById("grille-auteurs-vedette");
     if (grilleAuteurs) {
         let auteurs = await chargerAuteurs();

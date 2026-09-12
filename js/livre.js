@@ -1,6 +1,5 @@
-// ==========================================================================
-// MAKTABA — FICHE LIVRE (chargée dynamiquement via ?slug=...)
-// ==========================================================================
+// MAKTABA — FICHE LIVRE (chargée dynamiquement via ?slug=nom-de-l-ouvrage)
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let parametres = new URLSearchParams(window.location.search);
@@ -100,7 +99,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- Bouton "Lire en ligne" : ouvre le lecteur intégré si un fichier est disponible ---
     let boutonLire = document.getElementById("bouton-lire-livre");
     let fichierPdf = (livre.fichiers_livres || []).find(f => f.type === "pdf");
     if (boutonLire) {
@@ -114,7 +112,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- Bouton "Voir la source" : affiché seulement si le livre a un lien externe ---
     let boutonSource = document.getElementById("bouton-source-livre");
     if (boutonSource) {
         if (livre.source_url) {
@@ -125,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- Favoris ---
     let boutonFavori = document.querySelector(".btn-favori");
     let messageErreurFavori = document.getElementById("message-erreur-favori");
 
@@ -175,7 +171,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 boutonFavori.disabled = false;
             });
         } else {
-            // Visiteur non connecté : le bouton renvoie simplement vers la connexion.
             boutonFavori.addEventListener("click", () => {
                 window.location.href = "connexion.html";
             });

@@ -1,31 +1,15 @@
-// ==========================================================================
-// MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=...)
-// PDF.js est hébergé localement (js/vendor/pdfjs/) plutôt que via un CDN
-// externe : structure garantie stable (lib, worker, cmaps, polices et wasm
-// viennent tous du même paquet officiel vérifié), aucune dépendance à un
-// tiers pour une fonctionnalité centrale du site. Chargé en import()
-// dynamique, car PDF.js n'est distribué qu'en module ES.
-// ==========================================================================
+// MAKTABA — LECTEUR PDF INTÉGRÉ (via ?slug=nom-de-l-ouvrage) — CONNECTÉ À SUPABASE)
 
-// Résolu à partir de l'URL réelle de CE script, donc correct quelle que soit
-// la page qui l'inclut (racine ou pages/).
+
 const PDFJS_BASE = (() => {
     let urlScript = document.currentScript ? document.currentScript.src : null;
     return urlScript
         ? new URL("vendor/pdfjs/", urlScript).href
-        : new URL("vendor/pdfjs/", window.location.href).href; // repli improbable
+        : new URL("vendor/pdfjs/", window.location.href).href;
 })();
 
-// ==========================================================================
-// POLYFILLS — PDF.js 6.x utilise des méthodes JavaScript très récentes
-// (Baseline seulement depuis février 2026) que certains navigateurs, dont
-// Safari sur iPhone/iPad selon la version d'iOS, ne connaissent pas encore.
-// Sans ça, le rendu échoue avec "getOrInsertComputed is not a function"
-// (bug de compatibilité documenté sur le dépôt officiel de PDF.js, pas
-// spécifique à Maktaba). On fournit une implémentation de secours pour
-// que le lecteur fonctionne partout, y compris sur les navigateurs pas
-// encore à jour.
-// ==========================================================================
+// POLYFILLS
+
 (function () {
     if (!Map.prototype.getOrInsertComputed) {
         Map.prototype.getOrInsertComputed = function (cle, callback) {
@@ -99,11 +83,8 @@ const PDFJS_BASE = (() => {
     }
 })();
 
-// ==========================================================================
-// JOURNAL TECHNIQUE — capture les avertissements/erreurs de la console pour
-// pouvoir les consulter directement sur la page (utile sur mobile, où les
-// outils de développement ne sont pas accessibles facilement).
-// ==========================================================================
+// JOURNAL TECHNIQUE
+
 let journalTechnique = [];
 (function () {
     let avertissementOriginal = console.warn.bind(console);
@@ -175,7 +156,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // --- Session (nécessaire pour un fichier protégé, et pour la progression) ---
     let session = null;
     try {
         const { data } = await supabaseClient.auth.getSession();
@@ -198,7 +178,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // --- Chargement de PDF.js (fichiers locaux, js/vendor/pdfjs/) ---
     let pdfjsLib;
     try {
         pdfjsLib = await import(`${PDFJS_BASE}pdf.mjs`);
@@ -219,8 +198,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             wasmUrl: `${PDFJS_BASE}wasm/`,
         });
 
-        // Progression réelle du téléchargement, pour ne pas laisser l'utilisateur
-        // face à un texte figé pendant potentiellement plusieurs secondes.
         tacheChargement.onProgress = ({ loaded, total }) => {
             if (total) {
                 let pourcentage = Math.round((loaded / total) * 100);
@@ -229,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
                 let mo = (loaded / 1024 / 1024).toFixed(1);
                 messageChargement.textContent = `Chargement du document... (${mo} Mo)`;
-                if (barreChargement) barreChargement.style.width = "60%"; // taille inconnue : on avance quand même visuellement
+                if (barreChargement) barreChargement.style.width = "60%";
             }
         };
 
@@ -246,12 +223,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     let modeContinu = false;
     let conteneurContinu = null;
     let observateurPagesContinu = null;
-    let echelleBase = 1.2; // recalculée automatiquement au premier rendu (voir plus bas)
+    let echelleBase = 1.2;
     let echelleInitialisee = false;
     const ECHELLE_MIN = 0.5;
     const ECHELLE_MAX = 3;
 
-    // --- Reprise de la progression de lecture ---
     if (utilisateurId) {
         let progression = await chargerProgression(livre.id, utilisateurId);
         if (progression && progression.page_actuelle > 0 && progression.page_actuelle <= nbPages) {
@@ -272,10 +248,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             let page = await document_.getPage(numero);
 
-            // Au tout premier rendu, on ajuste l'échelle à la largeur réellement
-            // disponible plutôt que d'utiliser une valeur fixe : une page scannée
-            // en haute résolution se rend beaucoup plus vite à une échelle adaptée
-            // qu'agrandie inutilement au-delà de ce qui sera affiché à l'écran.
             if (!echelleInitialisee) {
                 let viewportBrut = page.getViewport({ scale: 1 });
                 let largeurDisponible = document.getElementById("zone-canvas").clientWidth - 64;
@@ -286,19 +258,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 echelleInitialisee = true;
             }
 
-            // Taille d'affichage voulue (en pixels CSS)
             let viewportAffichage = page.getViewport({ scale: echelle });
 
-            // Rendu net sur écrans haute densité (Retina, la quasi-totalité des
-            // smartphones et laptops récents) : on dessine sur un canvas dont
-            // la résolution réelle est supérieure à la taille affichée, sinon
-            // le rendu paraît flou comparé à un lecteur PDF natif.
-            let ratioPixels = Math.min(window.devicePixelRatio || 1, 2.5); // plafonné pour la mémoire
+            let ratioPixels = Math.min(window.devicePixelRatio || 1, 2.5);
             let viewportRendu = page.getViewport({ scale: echelle * ratioPixels });
 
-            // Sécurité : Safari sur iPhone/iPad limite la taille réelle (en
-            // pixels) d'un <canvas> à environ 16 millions — on réduit l'échelle
-            // si le rendu haute densité la dépasserait, plutôt que d'échouer.
             const PIXELS_MAX_CANVAS = 16000000;
             if (viewportRendu.width * viewportRendu.height > PIXELS_MAX_CANVAS) {
                 let facteurReduction = Math.sqrt(PIXELS_MAX_CANVAS / (viewportRendu.width * viewportRendu.height));
@@ -317,8 +281,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             chargementLecteur.hidden = true;
             canvas.hidden = false;
         } catch (erreur) {
-            // Une page corrompue ou mal encodée ne doit pas bloquer la lecture
-            // du reste du livre : on le signale et on laisse naviguer ailleurs.
             console.error(`Maktaba : erreur de rendu de la page ${numero}.`, erreur);
             canvas.hidden = true;
             chargementLecteur.classList.add("etat-erreur");
@@ -360,7 +322,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         mettreAJourZoom();
     });
 
-    // --- Plein écran ---
     if (boutonPleinEcran) {
         boutonPleinEcran.addEventListener("click", () => {
             if (!document.fullscreenElement) {
@@ -376,7 +337,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- Gestes tactiles (mode page unique) : balayage, double-tap, pincement ---
     let toucheDepartX = null, toucheDepartY = null, toucheDepartTemps = null;
     let pincementDistanceDepart = null, pincementEchelleDepart = null, pincementFacteurCourant = 1;
     let dernierTapTemps = 0;
@@ -388,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     zoneCanvasEl.addEventListener("touchstart", (e) => {
-        if (modeContinu) return; // le défilement continu gère le scroll nativement
+        if (modeContinu) return;
         if (e.touches.length === 2) {
             pincementDistanceDepart = distanceEntreDoigts(e.touches);
             pincementEchelleDepart = echelle;
@@ -403,10 +363,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     zoneCanvasEl.addEventListener("touchmove", (e) => {
         if (modeContinu) return;
         if (e.touches.length === 2 && pincementDistanceDepart) {
-            e.preventDefault(); // empêche le zoom natif du navigateur de prendre le dessus
+            e.preventDefault();
             let distanceActuelle = distanceEntreDoigts(e.touches);
             pincementFacteurCourant = distanceActuelle / pincementDistanceDepart;
-            // Retour visuel immédiat (peu coûteux) ; le re-rendu net se fait au relâchement
             canvas.style.transform = `scale(${pincementFacteurCourant})`;
         }
     }, { passive: false });
@@ -431,7 +390,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         let dureeMs = Date.now() - toucheDepartTemps;
         toucheDepartX = null;
 
-        // Tap court et immobile : possible double-tap
         if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && dureeMs < 300) {
             let maintenant = Date.now();
             if (maintenant - dernierTapTemps < 350) {
@@ -444,14 +402,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Balayage horizontal net = page suivante/précédente
         if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-            if (deltaX < 0) afficherPage(pageActuelle + 1); // vers la gauche = page suivante
+            if (deltaX < 0) afficherPage(pageActuelle + 1);
             else afficherPage(pageActuelle - 1);
         }
     }, { passive: true });
 
-    // --- Mode défilement continu (alternative au mode page unique) ---
     async function rendreCanvasContinu(c, numero) {
         c.dataset.rendu = "1";
         try {
@@ -463,7 +419,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             await page.render({ canvasContext: c.getContext("2d"), viewport: viewportRendu }).promise;
         } catch (erreur) {
             console.error(`Maktaba : erreur de rendu (défilement continu) page ${numero}.`, erreur);
-            delete c.dataset.rendu; // permet de retenter si la page redevient visible
+            delete c.dataset.rendu;
         }
     }
 
@@ -506,9 +462,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         let cibleInitiale = conteneurContinu.querySelector(`canvas[data-page="${pageActuelle}"]`);
         if (cibleInitiale) cibleInitiale.scrollIntoView({ block: "start" });
 
-        // Pincement pour zoomer, disponible aussi en défilement continu
-        // (le balayage/double-tap n'ont pas d'équivalent ici : le défilement
-        // naturel à un doigt remplace déjà la navigation entre pages).
         let pDistDepart = null, pEchelleDepart = null, pFacteurCourant = 1;
 
         conteneurContinu.addEventListener("touchstart", (e) => {
@@ -553,7 +506,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             delete c.dataset.rendu;
         });
 
-        // Re-rendre immédiatement les pages actuellement à l'écran à la nouvelle échelle
         canvases.forEach(c => {
             let rect = c.getBoundingClientRect();
             if (rect.bottom > rectZone.top && rect.top < rectZone.bottom) {
@@ -591,22 +543,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Navigation au clavier (flèches gauche/droite)
     document.addEventListener("keydown", (e) => {
-        if (modeContinu) return; // en défilement continu, le clavier ne fait rien de spécial pour l'instant
+        if (modeContinu) return;
         if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
         if (e.key === "ArrowRight") afficherPage(pageActuelle + 1);
         if (e.key === "ArrowLeft") afficherPage(pageActuelle - 1);
     });
 
-    // Sommaire mobile (masqué par défaut sur petit écran via CSS)
     if (boutonBasculerSommaire && sommaireLecteur) {
         boutonBasculerSommaire.addEventListener("click", () => {
             sommaireLecteur.classList.toggle("sommaire-ouvert");
         });
     }
 
-    // --- Journal technique (consultable sans outils de développement) ---
     let boutonJournal = document.getElementById("bouton-journal-technique");
     let boutonFermerJournal = document.getElementById("bouton-fermer-journal");
     let panneauJournal = document.getElementById("panneau-journal-technique");
@@ -633,7 +582,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- Sommaire (si le PDF en contient un) ---
     try {
         let plan = await document_.getOutline();
         if (plan && plan.length) {

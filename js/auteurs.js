@@ -1,6 +1,4 @@
-// ==========================================================================
 // MAKTABA — PAGE AUTEURS (liste complète, chargée depuis Supabase)
-// ==========================================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
     let grille = document.getElementById("grille-auteurs");

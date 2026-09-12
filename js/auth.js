@@ -1,6 +1,5 @@
-// ==========================================================================
 // MAKTABA — AUTH (Connexion / Inscription) — CONNECTÉ À SUPABASE
-// ==========================================================================
+
 
 document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🧭 TRADUCTION DES ERREURS SUPABASE EN FRANÇAIS
+    // TRADUCTION DES ERREURS SUPABASE EN FRANÇAIS
     // ==========================================
     function traduireErreur(erreur) {
         if (!erreur) return "Une erreur inconnue est survenue.";
@@ -62,11 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return "Impossible de contacter le serveur. Vérifiez votre connexion internet.";
         }
 
-        return message || "Une erreur inconnue est survenue."; // fallback : message brut de Supabase si non reconnu
+        return message || "Une erreur inconnue est survenue.";
     }
 
     // ==========================================
-    // ✨ FONCTION DE BASCULE AVEC ANIMATION
+    // FONCTION DE BASCULE AVEC ANIMATION
     // ==========================================
     function activerMode(mode) {
         let estConnexion = mode === "connexion";
@@ -153,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // ✅ VALIDATION EMAIL EN TEMPS RÉEL
+    // VALIDATION EMAIL EN TEMPS RÉEL
     // ==========================================
     document.querySelectorAll('input[type="email"]').forEach((input) => {
         input.addEventListener("input", () => {
@@ -164,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // 🔒 INDICATEUR DE FORCE DU MOT DE PASSE
+    // INDICATEUR DE FORCE DU MOT DE PASSE
     // ==========================================
     let mdpInscription = document.getElementById("mot-de-passe-inscription");
     let forceConteneur = document.getElementById("force-mdp-conteneur");
@@ -191,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🔁 VÉRIFICATION CONFIRMATION MOT DE PASSE
+    // VÉRIFICATION CONFIRMATION MOT DE PASSE
     // ==========================================
     let confirmMdp = document.getElementById("confirm-mot-de-passe");
 
@@ -204,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // ⏳ HELPER : ÉTAT DE CHARGEMENT SUR UN BOUTON
+    // HELPER : ÉTAT DE CHARGEMENT SUR UN BOUTON
     // ==========================================
     function activerChargement(bouton, actif) {
         if (!bouton) return;
@@ -215,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🔐 SOUMISSION — CONNEXION (RÉELLE, VIA SUPABASE)
+    // SOUMISSION — CONNEXION
     // ==========================================
     if (formConnexion) {
         formConnexion.addEventListener("submit", async (e) => {
@@ -258,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🆕 SOUMISSION — INSCRIPTION (RÉELLE, VIA SUPABASE)
+    // SOUMISSION — INSCRIPTION
     // ==========================================
     if (formInscription) {
         formInscription.addEventListener("submit", async (e) => {
@@ -278,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             cacherMessages();
 
-            // Validations côté client avant d'appeler Supabase
             if (motDePasse !== confirmation) {
                 afficherMessage(messageInscription, "Les mots de passe ne correspondent pas.", "erreur");
                 return;
@@ -297,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     password: motDePasse,
                     options: {
                         data: {
-                            nom_complet: nom, // récupéré par le trigger SQL pour remplir "profils"
+                            nom_complet: nom,
                         },
                     },
                 });
@@ -307,9 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // 🔍 Si Supabase renvoie directement une session,
-                // cela signifie que la confirmation email est désactivée
-                // → l'utilisateur est déjà connecté, on le redirige directement.
                 if (data.session) {
                     afficherMessage(messageInscription, "Compte créé avec succès ! Redirection en cours...", "succes");
                     setTimeout(() => {
@@ -318,7 +313,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Sinon, la confirmation par email est bien requise
                 afficherMessage(
                     messageInscription,
                     "Compte créé avec succès ! Vérifiez votre boîte mail pour confirmer votre adresse.",
@@ -335,15 +329,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🔎 VÉRIFIER SI UN UTILISATEUR EST DÉJÀ CONNECTÉ
+    // VÉRIFIER SI UN UTILISATEUR EST DÉJÀ CONNECTÉ
     // ==========================================
     async function verifierSessionActive() {
         if (!supabaseClient) return;
         try {
             const { data } = await supabaseClient.auth.getSession();
             if (data.session) {
-                // Un utilisateur déjà connecté qui arrive sur la page connexion
-                // est redirigé automatiquement vers l'accueil.
                 window.location.href = "../index.html";
             }
         } catch (erreur) {
@@ -352,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 🔗 CONNEXION VIA GOOGLE / GITHUB (OAuth)
+    // CONNEXION VIA GOOGLE / GITHUB (OAuth)
     // ==========================================
     let boutonGoogle = document.getElementById("bouton-connexion-google");
     let boutonGithub = document.getElementById("bouton-connexion-github");
@@ -368,9 +360,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 provider: fournisseur,
                 options: { redirectTo: new URL("../index.html", window.location.href).href },
             });
-            // En cas de succès, Supabase redirige immédiatement vers la page de connexion
-            // du fournisseur : il n'y a rien d'autre à faire ici. On n'affiche un message
-            // que si la requête elle-même échoue (fournisseur non activé, etc.).
             if (error) {
                 afficherMessage(messageConnexion, traduireErreur(error), "erreur");
             }
