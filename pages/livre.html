@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../css/dynamique.css">
     <link rel="stylesheet" href="../css/lecteur.css">
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/audio.css">
     <script src="https://kit.fontawesome.com/c665d6d536.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <title>Riyad as-Salihin — Maktaba</title>
@@ -179,6 +180,38 @@
             </div>
         </section>
 
+        <!-- Section Audio : explications en leçons -->
+        <section class="section-audio" id="section-audio" hidden>
+            <div class="conteneur-audio">
+                <h2 class="titre-audio">
+                    <i class="fa-solid fa-headphones"></i> Écouter l'explication
+                </h2>
+
+                <div class="audio-entete">
+                    <select id="audio-serie-select" aria-label="Choisir une série d'explications" hidden></select>
+                    <p class="audio-serie-desc" id="audio-serie-desc"></p>
+                </div>
+
+                <div class="audio-lecteur">
+                    <p class="audio-titre-en-cours" id="audio-titre-en-cours">Choisis une leçon</p>
+                    <div class="audio-video"><div id="audio-player"></div></div>
+                    <label class="audio-vitesse">
+                        Vitesse
+                        <select id="audio-vitesse">
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </label>
+                </div>
+
+                <ol class="audio-lecons" id="audio-lecons"></ol>
+            </div>
+        </section>
+
+
     </main>
 
     <!-- =========================================
@@ -238,5 +271,6 @@
 <script src="../js/data.js"></script>
 <script src="../js/app.js"></script>
 <script src="../js/livre.js"></script>
+<script src="../js/audio.js"></script>
 </body>
 </html>
