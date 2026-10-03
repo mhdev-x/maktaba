@@ -2,7 +2,7 @@
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    let vedette = await chargerLivreParSlug("riyad-as-salihin");
+    let vedette = await chargerLivreParSlug("mukhtasar-al-aqida-al-islamiyya");
     if (vedette) {
         let elArabe = document.getElementById("hero-arabe");
         let elTitre = document.getElementById("hero-titre");
