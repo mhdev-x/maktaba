@@ -1,0 +1,267 @@
+/* =========================================
+   MAKTABA - audio.css
+   Section "Écouter l'explication" de la page livre
+   Utilise les variables de base.css (sombre par défaut)
+   ========================================= */
+
+/* Salma Arabic limitée aux caractères arabes (le wolof reste en Arial) */
+
+@font-face {
+    font-family: "Salma Arabic Seul";
+    src: url("../assets/fonts/SalmaArabic-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+.section-audio {
+    width: 100%;
+    padding: 0 0 80px 0;
+}
+
+.conteneur-audio {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+    padding: 32px;
+    background-color: var(--couleur-surface);
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    border-radius: 20px 20px 12px 12px;
+}
+
+.titre-audio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    color: var(--couleur-texte);
+    margin-bottom: 20px;
+}
+
+.titre-audio i {
+    color: var(--couleur-accent);
+}
+
+/* ---------- En-tête de la série ---------- */
+.audio-entete {
+    margin-bottom: 24px;
+}
+
+.audio-serie-desc {
+    color: var(--couleur-secondaire);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.audio-serie-desc a {
+    color: var(--couleur-accent);
+    text-decoration: none;
+}
+
+.audio-serie-desc a:hover {
+    text-decoration: underline;
+}
+
+.audio-badge-langue {
+    display: inline-block;
+    padding: 3px 12px;
+    margin-right: 6px;
+    border-radius: 20px;
+    border: 1px solid rgba(200, 169, 107, 0.25);
+    background-color: rgba(200, 169, 107, 0.1);
+    color: var(--couleur-accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- Sélecteurs (série, vitesse) ---------- */
+.audio-entete select,
+.audio-vitesse select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    background-color: var(--couleur-fond);
+    color: var(--couleur-texte);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.audio-entete select {
+    max-width: 100%;
+    margin-bottom: 12px;
+}
+
+.audio-entete select:focus,
+.audio-vitesse select:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(200, 169, 107, 0.1);
+}
+
+/* ---------- Lecteur vidéo ---------- */
+.audio-lecteur {
+    margin-bottom: 28px;
+}
+
+.audio-titre-en-cours {
+    color: var(--couleur-texte);
+    font-family: "Salma Arabic Seul", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+
+.audio-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #000;
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.audio-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.audio-vitesse {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    color: var(--couleur-secondaire);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ---------- Liste des leçons ---------- */
+.audio-lecons {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.audio-lecons button {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2.4rem 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    background-color: transparent;
+    color: var(--couleur-texte);
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.audio-lecons button:hover {
+    border-color: var(--couleur-accent);
+    background-color: rgba(200, 169, 107, 0.05);
+}
+
+.audio-lecons button:focus-visible {
+    outline: 2px solid var(--couleur-accent);
+    outline-offset: 2px;
+}
+
+.audio-lecons button.active {
+    background-color: var(--couleur-accent);
+    border-color: var(--couleur-accent);
+    color: #0d0d0d;
+    box-shadow: 0 4px 14px rgba(200, 169, 107, 0.3);
+}
+
+.lecon-numero {
+    font-weight: 700;
+    color: var(--couleur-accent);
+}
+
+.lecon-titre {
+    font-family: "Salma Arabic Seul", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.lecon-duree {
+    font-size: 0.82rem;
+    color: var(--couleur-secondaire);
+}
+
+.audio-lecons button.active .lecon-numero,
+.audio-lecons button.active .lecon-duree {
+    color: #0d0d0d;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+    .conteneur-audio {
+        padding: 20px 16px;
+    }
+
+    .audio-lecons button {
+        grid-template-columns: 1.8rem 1fr;
+    }
+
+    .lecon-duree {
+        display: none;
+    }
+}
+
+/* =========================================
+   LIGHT MODE - AUDIO
+   ========================================= */
+body.theme-clair .conteneur-audio {
+    border-color: rgba(42, 38, 33, 0.08);
+    box-shadow: 0 4px 15px rgba(42, 38, 33, 0.03);
+}
+
+body.theme-clair .audio-entete select,
+body.theme-clair .audio-vitesse select {
+    border-color: rgba(42, 38, 33, 0.12);
+    background-color: #F9F8F5;
+    color: #2A2621;
+}
+
+body.theme-clair .audio-video {
+    border-color: rgba(42, 38, 33, 0.08);
+    box-shadow: 0 20px 40px rgba(42, 38, 33, 0.08);
+}
+
+body.theme-clair .audio-badge-langue {
+    border-color: rgba(184, 139, 66, 0.2);
+    background-color: rgba(184, 139, 66, 0.1);
+}
+
+body.theme-clair .audio-lecons button {
+    border-color: rgba(42, 38, 33, 0.08);
+}
+
+body.theme-clair .audio-lecons button:hover {
+    background-color: rgba(184, 139, 66, 0.03);
+}
+
+body.theme-clair .audio-lecons button.active {
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(184, 139, 66, 0.3);
+}
+
+body.theme-clair .audio-lecons button.active .lecon-numero,
+body.theme-clair .audio-lecons button.active .lecon-duree {
+    color: #FFFFFF;
+}
