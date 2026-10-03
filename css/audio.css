@@ -265,3 +265,39 @@ body.theme-clair .audio-lecons button.active .lecon-numero,
 body.theme-clair .audio-lecons button.active .lecon-duree {
     color: #FFFFFF;
 }
+
+/* ---------- Verrou (visiteur non connecté) ---------- */
+.audio-verrou {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 36px 20px;
+    text-align: center;
+    border: 1px dashed rgba(200, 169, 107, 0.3);
+    border-radius: 12px;
+    background-color: rgba(200, 169, 107, 0.03);
+}
+
+.audio-verrou > i {
+    font-size: 1.8rem;
+    color: var(--couleur-accent);
+}
+
+.audio-verrou p {
+    max-width: 420px;
+    color: var(--couleur-secondaire);
+    line-height: 1.7;
+}
+
+.audio-verrou .bouton-principal {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+body.theme-clair .audio-verrou {
+    border-color: rgba(184, 139, 66, 0.3);
+    background-color: rgba(184, 139, 66, 0.04);
+}

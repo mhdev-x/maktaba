@@ -180,34 +180,46 @@
             </div>
         </section>
 
-        <!-- Section Audio : explications en leçons -->
+        <!-- Section Audio : réservée aux membres connectés -->
         <section class="section-audio" id="section-audio" hidden>
             <div class="conteneur-audio">
                 <h2 class="titre-audio">
                     <i class="fa-solid fa-headphones"></i> Écouter l'explication
                 </h2>
 
-                <div class="audio-entete">
-                    <select id="audio-serie-select" aria-label="Choisir une série d'explications" hidden></select>
-                    <p class="audio-serie-desc" id="audio-serie-desc"></p>
+                <!-- Affiché aux visiteurs non connectés -->
+                <div class="audio-verrou" id="audio-verrou" hidden>
+                    <i class="fa-solid fa-lock"></i>
+                    <p>Les explications audio sont réservées aux membres connectés. Connecte-toi pour y accéder.</p>
+                    <a href="connexion.html" class="bouton-principal">
+                        <i class="fa-solid fa-user"></i> Se connecter
+                    </a>
                 </div>
 
-                <div class="audio-lecteur">
-                    <p class="audio-titre-en-cours" id="audio-titre-en-cours">Choisis une leçon</p>
-                    <div class="audio-video"><div id="audio-player"></div></div>
-                    <label class="audio-vitesse">
-                        Vitesse
-                        <select id="audio-vitesse">
-                            <option value="0.75">0.75x</option>
-                            <option value="1" selected>1x</option>
-                            <option value="1.25">1.25x</option>
-                            <option value="1.5">1.5x</option>
-                            <option value="2">2x</option>
-                        </select>
-                    </label>
-                </div>
+                <!-- Affiché aux membres connectés -->
+                <div id="audio-contenu" hidden>
+                    <div class="audio-entete">
+                        <select id="audio-serie-select" aria-label="Choisir une série d'explications" hidden></select>
+                        <p class="audio-serie-desc" id="audio-serie-desc"></p>
+                    </div>
 
-                <ol class="audio-lecons" id="audio-lecons"></ol>
+                    <div class="audio-lecteur">
+                        <p class="audio-titre-en-cours" id="audio-titre-en-cours">Choisis une leçon</p>
+                        <div class="audio-video"><div id="audio-player"></div></div>
+                        <label class="audio-vitesse">
+                            Vitesse
+                            <select id="audio-vitesse">
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <ol class="audio-lecons" id="audio-lecons"></ol>
+                </div>
             </div>
         </section>
 

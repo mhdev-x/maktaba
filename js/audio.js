@@ -27,6 +27,8 @@
     const NOMS_LANGUES = { wo: 'Wolof', fr: 'Français', ar: 'العربية', en: 'English' };
 
     const el = {
+        verrou: document.getElementById('audio-verrou'),
+        contenu: document.getElementById('audio-contenu'),
         select: document.getElementById('audio-serie-select'),
         desc: document.getElementById('audio-serie-desc'),
         titre: document.getElementById('audio-titre-en-cours'),
@@ -83,19 +85,12 @@
         });
     }
 
-    // ---------- Données ----------
-    async function chargerSeries() {
-        const { data: livre, error: errLivre } = await client
-            .from('livres').select('id').eq('slug', slug).single();
-        if (errLivre || !livre) {
-            console.warn('audio.js : livre introuvable pour ce slug.', errLivre);
-            return [];
-        }
-
+    // ---------- Données (réservées aux membres connectés par RLS) ----------
+    async function chargerSeries(livreId) {
         const { data, error } = await client
             .from('series_audio')
-            .select('id, explicateur, titre, description, langue, source_url, lecons_audio(id, numero, titre, youtube_id, duree_secondes)')
-            .eq('livre_id', livre.id)
+            .select('id, explicateur, titre, description, langue, lecons_audio(id, numero, titre, youtube_id, duree_secondes)')
+            .eq('livre_id', livreId)
             .order('numero', { referencedTable: 'lecons_audio', ascending: true });
 
         if (error) { console.error('audio.js :', error); return []; }
@@ -103,6 +98,12 @@
     }
 
     // ---------- Affichage ----------
+    function afficherVerrou() {
+        el.contenu.hidden = true;
+        el.verrou.hidden = false;
+        section.hidden = false;
+    }
+
     function afficherSerie(index) {
         serie = series[index];
         lecons = serie.lecons_audio;
@@ -112,15 +113,6 @@
         badge.className = 'audio-badge-langue';
         badge.textContent = NOMS_LANGUES[serie.langue] || serie.langue;
         el.desc.append(badge, ' ', `${serie.explicateur}. ${serie.description || ''}`);
-
-        if (serie.source_url) {
-            const lien = document.createElement('a');
-            lien.href = serie.source_url;
-            lien.target = '_blank';
-            lien.rel = 'noopener';
-            lien.textContent = ' Voir la playlist';
-            el.desc.appendChild(lien);
-        }
 
         el.liste.lang = serie.langue;
         el.liste.innerHTML = '';
@@ -199,7 +191,30 @@
 
     // ---------- Démarrage ----------
     (async function init() {
-        series = await chargerSeries();
+        // Le livre lui-même reste lisible publiquement (fiche du livre)
+        const { data: livre, error: errLivre } = await client
+            .from('livres').select('id').eq('slug', slug).single();
+        if (errLivre || !livre) {
+            console.warn('audio.js : livre introuvable pour ce slug.', errLivre);
+            return;
+        }
+
+        // Si l'utilisateur se déconnecte sur cette page, on recharge pour tout verrouiller
+        client.auth.onAuthStateChange(event => {
+            if (event === 'SIGNED_OUT') location.reload();
+        });
+
+        const { data: { session } } = await client.auth.getSession();
+
+        // Visiteur non connecté : message de verrou, uniquement si le livre a de l'audio
+        if (!session) {
+            const { data: aAudio } = await client.rpc('livre_a_audio', { p_livre_id: livre.id });
+            if (aAudio) afficherVerrou();
+            return;
+        }
+
+        // Membre connecté
+        series = await chargerSeries(livre.id);
         if (!series.length) return; // pas de leçons : la section reste cachée
 
         if (series.length > 1) {
@@ -212,7 +227,10 @@
             el.select.hidden = false;
         }
 
+        el.verrou.hidden = true;
+        el.contenu.hidden = false;
         section.hidden = false;
+
         await chargerApiYouTube();
         await creerLecteur();
         afficherSerie(0);
