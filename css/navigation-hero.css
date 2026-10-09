@@ -390,6 +390,10 @@ body.theme-clair .dropdown-item:hover {
     border: 1px solid rgba(200, 169, 107, 0.25);
     border-radius: 20px;
 }
+.lien-livre-hero {
+    text-decoration: none;
+    color: inherit;
+}
 
 .couverture-livre {
     padding: 2rem 1rem;
